@@ -1,0 +1,72 @@
+const Command = require('../../structures/CommandClass');
+const { SlashCommandBuilder } = require('@discordjs/builders');
+
+const { EmbedBuilder } = require('discord.js');
+
+module.exports = class Play extends Command {
+	constructor(client) {
+		super(client, {
+			data: new SlashCommandBuilder()
+				.setName('skipto')
+				.setDescription('[Holo | Music] Skip current played song to specific queue position.')
+				.setDMPermission(true)
+				.addIntegerOption(option => option
+					.setName('position')
+					.setDescription('Provide queue position.')
+					.setRequired(true),
+				),
+			usage: 'skipto <position>',
+			category: 'Music',
+			permissions: ['Use Application Commands', 'Send Messages', 'Embed Links'],
+			hidden: false,
+		});
+	}
+
+	async run(client, interaction) {
+		const player = client.poru.players.get(interaction.guild.id);
+
+		await interaction.deferReply();
+		const value = interaction.options.getInteger('position');
+
+		if (!player) {
+			const noPlayer = new EmbedBuilder().setColor('Red').setDescription('`❌` | No song are currently being played.');
+
+			return interaction.editReply({ embeds: [noPlayer] });
+		}
+
+		if (interaction.user.id != player.currentTrack.info.requester) {
+			const embed = new EmbedBuilder()
+				.setColor('Red')
+				.setDescription('Only the song requester can skip to specific position of the queue');
+
+			return interaction.editReply({ embeds: [embed], ephemeral: true });
+		}
+
+		if (value > player.queue.length) {
+			const embed = new EmbedBuilder()
+				.setDescription('`❌` | Song position was: `Not found`')
+				.setColor('Red');
+			return interaction.editReply({ embeds: [embed] });
+		}
+
+		if (value === 1) {
+			await player.skip();
+
+			const embed = new EmbedBuilder()
+				.setDescription(`\`⏭️\` | Song skipped to position: \`${value}\``)
+				.setColor('Green');
+
+			return interaction.editReply({ embeds: [embed] });
+		}
+
+		await player.queue.splice(0, value - 1);
+		await player.skip();
+
+		const embed = new EmbedBuilder()
+			.setDescription(`\`⏭️\` | Song skipped to position: \`${value}\``)
+			.setColor('Green');
+
+		return interaction.editReply({ embeds: [embed] });
+
+	}
+};

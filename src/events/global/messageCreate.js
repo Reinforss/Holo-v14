@@ -1,0 +1,136 @@
+/* eslint-disable no-mixed-spaces-and-tabs */
+/* eslint-disable no-shadow */
+const Event = require('../../structures/EventClass');
+
+const { EmbedBuilder } = require('discord.js');
+const snek = require('node-superfetch');
+const userModel = require('../../schema/user');
+
+const prefix = ';';
+
+module.exports = class MessageCreate extends Event {
+	constructor(client) {
+		super(client, {
+			name: 'messageCreate',
+			category: 'message',
+		});
+	}
+
+	async run(message) {
+		if (message.author.bot) return;
+
+		const mentionedUserIDs = message.mentions.users.map(user => user.id);
+		const mentionedMembers = await message.guild.members.fetch({ user: mentionedUserIDs });
+
+		const user = await userModel.findOne({ userID: message.author.id });
+		if (user && user.afk) {
+		  const notify = await message.reply(`⌨️ | Welcome back ${message.author.toString()} I've removed you from AFK Mode`);
+		  setTimeout(() => {
+		    notify.delete().catch(console.error);
+		  }, 10000);
+		  user.afk = '';
+		  await user.save();
+		}
+
+		mentionedMembers.forEach(async (mentionedMember) => {
+		  const user = await userModel.findOne({ userID: mentionedMember.id });
+
+		  if (user && user.afk) {
+		    const afkEmbed = new EmbedBuilder()
+		      .setColor('Green')
+		      .setAuthor({ name: 'They are AFK at the moment, please try again later!' })
+		      .setDescription(`${user.afk}`);
+
+		    try {
+		      await message.reply({ embeds: [afkEmbed] });
+		    }
+				catch (error) {
+		      console.error('Failed to send AFK notifier to channel:', error);
+		    }
+		  }
+		});
+
+		// if (message.channel.id === CONVERSATION_CHANNEL_ID) {
+		//   const AI = new GoogleGenerativeAI('AIzaSyCV_oNY8Wk3XQh4z0quwNSNyghmd3PIY9U');
+
+		//   const model = AI.getGenerativeModel({ model: MODEL_NAME });
+
+		//   const generationConfig = {
+		//     temperature: 0.9,
+		//     topK: 1,
+		//     topP: 1,
+		//     maxOutputTokens: 2048,
+		//   };
+
+		//   const parts = [
+		//     {
+		//       text: `input: ${message.content}`,
+		//     },
+		//   ];
+
+		//   const result = await model.generateContent({
+		//     contents: [{ role: "user", parts }],
+		//     generationConfig,
+		//   });
+
+		//   const reply = await result.response.text();
+		//   // due to Discord limitations, we can only send 2000 characters at a time, so we need to split the message
+		//   if (reply.length > 2000) {
+		//     const replyArray = reply.match(/[\s\S]{1,2000}/g);
+		//     replyArray.forEach(async (msg) => {
+		//       await message.reply(msg);
+		//     });
+		//     return;
+		//   }
+
+		//   message.reply(reply);
+		// }
+
+		// command
+		if (!message.content.startsWith(prefix)) return;
+
+		const args = message.content.slice(prefix.length).trim().split(/ +/);
+		const command = args.shift().toLowerCase();
+
+		console.log(message);
+
+		if (command === 'eval') {
+			if (message.author.id !== '292936070603997185') return;
+
+			const embed = new EmbedBuilder()
+				.setColor('Green');
+			try {
+				const code = args.join(' ');
+				let result = eval(code);
+
+				if (typeof result !== 'string') {
+					result = require('util').inspect(result);
+				}
+
+				if (result.length > 1024) {
+					const { body } = await snek.post('https://www.hasteb.in/documents').send(result);
+					embed.addFields({ name:'Input', value: `\`\`\`js\n${code}\`\`\`` });
+					embed.addFields({ name:'Output', value:`https://www.hasteb.in/${body.key}.js` });
+				}
+				else {
+					embed.addFields({ name:'Input', value: `\`\`\`js\n${code}\`\`\`` });
+					embed.addFields({ name:'Output', value:`\`\`\`js\n${result}\`\`\`` });
+				}
+
+				message.reply({ embeds: [embed] });
+			}
+			catch (err) {
+				if (err.length > 1024) {
+					const { body } = await snek.post('https://www.hasteb.in/documents').send(err);
+					embed.addFields({ name: 'Input', value:`\`\`\`js\n${args.join(' ')}\`\`\`` });
+					embed.addFields({ name:'Error', value:`\`\`\`xl\n${body.key}.js\`\`\`` });
+				}
+				else {
+					embed.addFields({ name: 'Input', value:`\`\`\`js\n${args.join(' ')}\`\`\`` });
+					embed.addFields({ name:'Error', value:`\`\`\`xl\n${err}\`\`\`` });
+				}
+				message.reply({ embeds: [embed] });
+			}
+		}
+	}
+};
