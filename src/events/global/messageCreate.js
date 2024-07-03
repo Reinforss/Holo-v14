@@ -4,7 +4,9 @@ const Event = require('../../structures/EventClass');
 
 const { EmbedBuilder } = require('discord.js');
 const snek = require('node-superfetch');
+
 const userModel = require('../../schema/user');
+
 
 const prefix = ';';
 
@@ -49,42 +51,6 @@ module.exports = class MessageCreate extends Event {
 		    }
 		  }
 		});
-
-		// if (message.channel.id === CONVERSATION_CHANNEL_ID) {
-		//   const AI = new GoogleGenerativeAI('AIzaSyCV_oNY8Wk3XQh4z0quwNSNyghmd3PIY9U');
-
-		//   const model = AI.getGenerativeModel({ model: MODEL_NAME });
-
-		//   const generationConfig = {
-		//     temperature: 0.9,
-		//     topK: 1,
-		//     topP: 1,
-		//     maxOutputTokens: 2048,
-		//   };
-
-		//   const parts = [
-		//     {
-		//       text: `input: ${message.content}`,
-		//     },
-		//   ];
-
-		//   const result = await model.generateContent({
-		//     contents: [{ role: "user", parts }],
-		//     generationConfig,
-		//   });
-
-		//   const reply = await result.response.text();
-		//   // due to Discord limitations, we can only send 2000 characters at a time, so we need to split the message
-		//   if (reply.length > 2000) {
-		//     const replyArray = reply.match(/[\s\S]{1,2000}/g);
-		//     replyArray.forEach(async (msg) => {
-		//       await message.reply(msg);
-		//     });
-		//     return;
-		//   }
-
-		//   message.reply(reply);
-		// }
 
 		// command
 		if (!message.content.startsWith(prefix)) return;

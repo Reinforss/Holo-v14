@@ -1,7 +1,6 @@
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v10');
 const fs = require('fs');
-const { ClusterManager } = require('discord-hybrid-sharding');
 require('dotenv').config();
 
 const deploy = async () => {
@@ -57,19 +56,4 @@ const deploy = async () => {
 	}
 };
 
-// Create a HybridShardingManager instance
-const manager = new ClusterManager('./index.js', {
-	totalShards: 'auto',
-	shardsPerClusters: 2,
-	totalClusters: 'auto',
-	mode: 'worker',
-	token: process.env.TOKEN,
-});
-
-manager.on('clusterCreate', async (cluster) => {
-	console.log(`[INFO] Launched Cluster ${cluster.id}`);
-	await deploy();
-});
-
-// Start the sharding manager
-manager.spawn({ timeout: -1 });
+deploy();

@@ -102,6 +102,7 @@ module.exports = class Daily extends Command {
 		}
 
 		receiverEconomy.balance += baseReward;
+		giverEconomy.dailyLastClaimed = now;
 
 		await giverEconomy.save();
 		await receiverEconomy.save();

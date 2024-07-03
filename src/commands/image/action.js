@@ -1,6 +1,7 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-unreachable */
 const Command = require('../../structures/CommandClass');
-const { SlashCommandBuilder } = require('@discordjs/builders');
+const { SlashCommandBuilder, EmbedBuilder, AttachmentBuilder } = require('@discordjs/builders');
 
 const { get } = require('node-superfetch');
 
@@ -9,11 +10,11 @@ module.exports = class Action extends Command {
 		super(client, {
 			data: new SlashCommandBuilder()
 				.setName('action')
-				.setDescription('[Holo|Action] Action command to interact with other users')
+				.setDescription('[Holo| Action] Action command to interact with other users')
 				.setDMPermission(true)
 				.addSubcommand(subcommand => subcommand
 					.setName('cry')
-					.setDescription('[Holo|Action] Express yourself crying')
+					.setDescription('[Holo| Action] Express yourself crying')
 					.addStringOption(option => option
 						.setName('message')
 						.setDescription('Message you want to add when cuddling someone'),
@@ -21,7 +22,7 @@ module.exports = class Action extends Command {
 				)
 				.addSubcommand(subcommand => subcommand
 					.setName('cuddle')
-					.setDescription('[Holo|Action] Cuddle a user')
+					.setDescription('[Holo| Action] Cuddle a user')
 					.addUserOption(option => option
 						.setName('user')
 						.setDescription('The user you want to cuddle')
@@ -34,7 +35,7 @@ module.exports = class Action extends Command {
 				)
 				.addSubcommand(subcommand => subcommand
 					.setName('hug')
-					.setDescription('[Holo|Action] Hug a user')
+					.setDescription('[Holo| Action] Hug a user')
 					.addUserOption(option => option
 						.setName('user')
 						.setDescription('The user you want to hug')
@@ -47,7 +48,7 @@ module.exports = class Action extends Command {
 				)
 				.addSubcommand(subcommand => subcommand
 					.setName('pat')
-					.setDescription('[Holo|Action] Pat a user')
+					.setDescription('[Holo| Action] Pat a user')
 					.addUserOption(option => option
 						.setName('user')
 						.setDescription('The user you want to pat')
@@ -60,7 +61,7 @@ module.exports = class Action extends Command {
 				)
 				.addSubcommand(subcommand => subcommand
 					.setName('stare')
-					.setDescription('[Holo|Action] Stare at someone')
+					.setDescription('[Holo| Action] Stare at someone')
 					.addUserOption(option => option
 						.setName('user')
 						.setDescription('The user you want to stare at')
@@ -73,7 +74,7 @@ module.exports = class Action extends Command {
 				)
 				.addSubcommand(subcommand => subcommand
 					.setName('tickle')
-					.setDescription('[Holo|Action] Tickle someone')
+					.setDescription('[Holo| Action] Tickle someone')
 					.addUserOption(option => option
 						.setName('user')
 						.setDescription('The user you want to tickle')
@@ -99,7 +100,7 @@ module.exports = class Action extends Command {
 			// )
 				.addSubcommand(subcommand => subcommand
 					.setName('slap')
-					.setDescription('[Holo|Action] Slap someone')
+					.setDescription('[Holo| Action] Slap someone')
 					.addUserOption(option => option
 						.setName('user')
 						.setDescription('The user you want to slap')
@@ -296,7 +297,6 @@ module.exports = class Action extends Command {
 			await interaction.reply({ embeds: [client.embeds.actionEmbed('Slap', `${description}`, `https://cdn.ram.moe/${body.path.replace('/i/', '')}`)] });
 			break;
 		}
-
-		}
 	}
+}
 };
