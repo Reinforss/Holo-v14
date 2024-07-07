@@ -25,10 +25,23 @@ module.exports = class Skip extends Command {
 
 		const voiceChannel = interaction.member.voice.channel;
 
-		if (!player || player.queue.size == 0) {
-			const embed = new EmbedBuilder().setDescription('`❌` | Next song was: `Not found`').setColor('Red');
+		if (!player) {
+			const embed = new EmbedBuilder().setDescription('`❌` | No song are currently being played').setColor('Red');
 			return interaction.editReply({ embeds: [embed] });
 		}
+
+		if (!interaction.member.voice.channel) {
+			const errorEmbed = new EmbedBuilder().setColor('Red').setDescription('`❌` | You must be on voice channel to use this command!');
+
+			return interaction.editReply({ embeds: [errorEmbed] });
+		}
+
+		if (player && interaction.member.voice.channelId !== interaction.guild.members.me.voice.channelId) {
+			const errorEmbed = new EmbedBuilder().setColor('Red').setDescription('`❌` | You must be on the same voice channel as mine to use this command.');
+
+			return interaction.editReply({ embeds: [errorEmbed] });
+		}
+
 		else {
 			const requester = player.currentTrack.info.requester;
 			const memberCount = voiceChannel ? voiceChannel.members.size : 1;

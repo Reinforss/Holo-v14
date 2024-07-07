@@ -33,8 +33,14 @@ module.exports = class Play extends Command {
 		const embed = new EmbedBuilder()
 			.setColor('Aqua');
 
+		if (!interaction.member.voice.channel) {
+			embed.setDescription('`❌` | You must be on voice channel to use this command!');
+
+			return interaction.editReply({ embeds: [embed] });
+		}
+
 		if (player && interaction.member.voice.channelId !== interaction.guild.members.me.voice.channelId) {
-			embed.setDescription('`❌` | You must be on the same voice channel as mine to use this command.').setTimestamp();
+			embed.setDescription('`❌` | You must be on the same voice channel as me to use this command.');
 
 			return interaction.editReply({ embeds: [embed] });
 		}

@@ -34,6 +34,18 @@ module.exports = class Loop extends Command {
 			return interaction.editReply({ embeds: [noPlayer], ephemeral: true });
 		}
 
+		if (!interaction.member.voice.channel) {
+			const errorEmbed = new EmbedBuilder().setColor('Red').setDescription('`❌` | You must be on voice channel to use this command!');
+
+			return interaction.editReply({ embeds: [errorEmbed] });
+		}
+
+		if (player && interaction.member.voice.channelId !== interaction.guild.members.me.voice.channelId) {
+			const errorEmbed = new EmbedBuilder().setColor('Red').setDescription('`❌` | You must be on the same voice channel as me to use this command.');
+
+			return interaction.editReply({ embeds: [errorEmbed] });
+		}
+
 		if (interaction.user.id === requester) {
 			this.toggleLoopMode(player);
 			const requestEmbed = new EmbedBuilder()

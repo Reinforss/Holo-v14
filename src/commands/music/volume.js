@@ -34,6 +34,18 @@ module.exports = class Volume extends Command {
 			return interaction.reply({ embeds: [noPlayer] });
 		}
 
+		if (!interaction.member.voice.channel) {
+			const errorEmbed = new EmbedBuilder().setColor('Red').setDescription('`❌` | You must be on voice channel to use this command!');
+
+			return interaction.editReply({ embeds: [errorEmbed] });
+		}
+
+		if (player && interaction.member.voice.channelId !== interaction.guild.members.me.voice.channelId) {
+			const errorEmbed = new EmbedBuilder().setColor('Red').setDescription('`❌` | You must be on the same voice channel as me to use this command.');
+
+			return interaction.editReply({ embeds: [errorEmbed] });
+		}
+
 		if (interaction.user.id != player.currentTrack.info.requester) {
 			embed.setColor('Red');
 			embed.setDescription('Only the song requester can change volume!');

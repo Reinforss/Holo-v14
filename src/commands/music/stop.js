@@ -32,6 +32,18 @@ module.exports = class Stop extends Command {
 			return interaction.reply({ embeds: [noPlayer] });
 		}
 
+		if (!interaction.member.voice.channel) {
+			const errorEmbed = new EmbedBuilder().setColor('Red').setDescription('`❌` | You must be on voice channel to use this command!').setTimestamp();
+
+			return interaction.editReply({ embeds: [errorEmbed] });
+		}
+
+		if (player && interaction.member.voice.channelId !== interaction.guild.members.me.voice.channelId) {
+			const errorEmbed = new EmbedBuilder().setColor('Red').setDescription('`❌` | You must be on the same voice channel as me to use this command.');
+
+			return interaction.editReply({ embeds: [errorEmbed] });
+		}
+
 		if (interaction.user.id == requester) {
 			await player.destroy();
 			const embed = new EmbedBuilder().setColor('Green').setDescription('`👋` | Player has been: `Disconnected`.');

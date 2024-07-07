@@ -25,7 +25,7 @@ module.exports = class VoiceStateUpdate extends Event {
 		const membersWithoutBots = newChannel.members.filter(m => !m.user.bot);
 
 		// Check if no non-bot members are in the channel
-		if (membersWithoutBots.size === 0 && player.queue.length > 0) {
+		if (membersWithoutBots.size === 0 && player.queue.length > 1) {
 			// Schedule inactivity check after 3 minutes
 			setTimeout(async () => {
 				// Check voice channel state again after 3 minutes

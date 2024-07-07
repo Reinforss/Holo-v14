@@ -32,10 +32,16 @@ module.exports = class Search extends Command {
 
 		const query = interaction.options.getString('query');
 
+		if (!interaction.member.voice.channel) {
+			const errorEmbed = new EmbedBuilder().setColor('Red').setDescription('`❌` | You must be on voice channel to use this command!');
+
+			return interaction.editReply({ embeds: [errorEmbed] });
+		}
+
 		if (player && interaction.member.voice.channelId !== interaction.guild.members.me.voice.channelId) {
 			const warning = new EmbedBuilder()
 				.setColor('Random')
-				.setDescription('`❌` | You must be on the same voice channel as mine to use this command.')
+				.setDescription('`❌` | You must be on the same voice channel as me to use this command.')
 				.setTimestamp();
 
 			return interaction.reply({ embeds: [warning] });

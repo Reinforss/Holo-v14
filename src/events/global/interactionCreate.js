@@ -35,6 +35,9 @@ module.exports = class InteractionCreate extends Event {
 				  const newUser = new User({
 						userID: interaction.user.id,
 						commandRun: 1,
+						afk: null,
+						experience: 0,
+						level: 1,
 				  });
 				  await newUser.save();
 				}
