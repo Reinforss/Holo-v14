@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 const Command = require('../../structures/CommandClass');
 
-const { EmbedBuilder } = require('discord.js');
+const { EmbedBuilder, MessageActionRow, MessageButton } = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { get } = require('node-superfetch');
 const { stripIndents } = require('common-tags');
@@ -15,8 +15,26 @@ module.exports = class Trivia extends Command {
 		super(client, {
 			data: new SlashCommandBuilder()
 				.setName('trivia')
-				.setDescription('[Holo|Fun] Try and guess the correct Answer!')
-				.setDMPermission(true),
+				.setDescription('[Holo | Fun] Try and guess the correct Answer!')
+				.setDMPermission(true)
+				.addStringOption(option => option
+					.setName('difficulty')
+					.setDescription('Choose how difficult the trivia')
+					.addChoices(
+						{
+							name: 'Easy',
+							value: 'easy',
+						},
+						{
+							name: 'Medium',
+							value: 'medium',
+						},
+						{
+							name: 'Hard',
+							value: 'hard',
+						},
+					),
+				),
 			usage: 'trivia',
 			category: 'Fun',
 			permissions: ['Use Application Commands', 'Send Messages', 'Embed Links'],
@@ -26,14 +44,25 @@ module.exports = class Trivia extends Command {
 
 	async run(client, interaction) {
 		try {
-			await interaction.deferReply('Please wait...');
+			await interaction.deferReply();
+
+
+			const difficulties = ['easy', 'medium', 'hard'];
+			const selectedDifficulty = difficulties[Math.floor(Math.random() * difficulties.length)];
+			const difficulty = interaction.options.getString('difficulty') || `${selectedDifficulty}`;
 
 			const { body } = await get('https://opentdb.com/api.php?amount=4').query({
 				amount: 1,
 				encode: 'url3986',
+				difficulty: difficulty,
 			});
 
-			const funDB = await Database.findOne({ userID: interaction.user.id });
+			let funDB = await Database.findOne({ userID: interaction.user.id });
+			if (!funDB) {
+				funDB = new Database({ userID: interaction.user.id });
+
+				await funDB.save();
+			}
 
 			// if (!funDB) {
 			//     const newFun = new Database({
@@ -49,7 +78,7 @@ module.exports = class Trivia extends Command {
 
 			switch (difficult) {
 			case 'easy':
-				duration = 5000;
+				duration = 7000;
 				break;
 			case 'medium':
 				duration = 10000;
@@ -58,7 +87,7 @@ module.exports = class Trivia extends Command {
 				duration = 15000;
 				break;
 			default:
-				duration = 10000;
+				duration = 15000;
 				break;
 			}
 

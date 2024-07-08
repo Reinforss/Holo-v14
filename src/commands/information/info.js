@@ -23,13 +23,22 @@ module.exports = class Info extends Command {
 						.setDescription('The user you want to check the information')))
 				.addSubcommand(subcommand => subcommand
 					.setName('role')
-					.setDescription('[Holo|Information] See information about a role')
+					.setDescription('[Holo| Information] See information about a role')
 					.addRoleOption(option => option
 						.setName('role')
 						.setDescription('The role you want to check')))
 				.addSubcommand(subcommand => subcommand
 					.setName('emotelist')
-					.setDescription('[Holo|Information] Show list of the server emote.'),
+					.setDescription('[Holo| Information] Show list of the server emote.'),
+				)
+				.addSubcommand(subcommand => subcommand
+					.setName('emote')
+					.setDescription('[Holo | Information] Show information about specified emotes.')
+					.addStringOption(option => option
+						.setName('name')
+						.setDescription('The name of the emote')
+						.setRequired(true),
+					),
 				)
 				.addSubcommand(subcommand => subcommand
 					.setName('anime')
@@ -51,6 +60,7 @@ module.exports = class Info extends Command {
 		const member = interaction.guild.members.cache.get(user.id) || await interaction.guild.members.fetch(user.id);
 		const role = interaction.options.getRole('role');
 		const find = interaction.options.getString('anime');
+		const emoteName = interaction.options.getString('name');
 
 		const guildFeatures = interaction.guild.features.map(feature => information.features[feature]).join(', ');
 		const verificationLevels = information.verify[interaction.guild.verificationLevel];
@@ -156,6 +166,30 @@ module.exports = class Info extends Command {
 				.setDescription(`${emojis}`);
 
 			interaction.reply({ embeds: [embed] });
+			break;
+		}
+		case 'emote': {
+			const emoji = interaction.guild.emojis.cache.get(emoteName) || interaction.guild.emojis.cache.find(emote => emote.name == emoteName);
+
+			if (emoji.animated === false) emoji.animated = 'No';
+			if (emoji.animated === true) emoji.animated = 'Yes';
+
+			const embed = new EmbedBuilder()
+				.setTitle('Emote Information')
+				.setColor('Random')
+				.setThumbnail(emoji.imageURL())
+				.setDescription(
+					`
+					Name: **${emoji.name}**
+					ID: **${emoji.id}**
+					Identifier: ${emoji.identifier}
+					Created: <t:${Math.floor(emoji.createdAt.getTime() / 1000)}:f> (${Math.floor((Date.now() - emoji.createdAt) / (1000 * 60 * 60 * 24))} days ago)
+					Animated: ${emoji.animated}
+					URL: [Here](${emoji.imageURL()})
+					`,
+				);
+				interaction.reply({ embeds: [embed] });
+
 			break;
 		}
 		case 'anime': {

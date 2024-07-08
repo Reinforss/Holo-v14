@@ -34,11 +34,6 @@ module.exports = class InteractionCreate extends Event {
 
 					// Determine if the current command is the most used
 					const mostUsedCommand = Array.from(user.commands.entries()).reduce((max, [key, value]) => value > max[1] ? [key, value] : max, [user.mostUsedCommand, 0]);
-
-					if (mostUsedCommand[0] !== user.mostUsedCommand) {
-						console.log(`[DEBUG] Command **${command.name}** has become the most used command. Previous most used command was **${user.mostUsedCommand}**.`);
-					}
-
 					user.mostUsedCommand = mostUsedCommand[0];
 					await user.save();
 				}
@@ -54,7 +49,6 @@ module.exports = class InteractionCreate extends Event {
 						mostUsedCommand: command.name,
 					});
 					await newUser.save();
-					console.log(`[DEBUG] Command **${command.name}** is the first command recorded for the user and is set as the most used command.`);
 				}
 
 				console.log(`[INFO] Command Executed: ${command.name}`);
