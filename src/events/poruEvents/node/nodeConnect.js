@@ -1,13 +1,10 @@
 const Guild = require('../../../schema/server');
 
 module.exports.run = async (client, node) => {
-	console.log(`[INFO] Node ${node.name} is ready.`);
+	console.log(`[MUSIC] Node ${node.name} is ready.`);
 
 	// This will auto reconnect when bot started or has been restarted
 	const maindata = await Guild.find();
-	const status = maindata.filter((x) => x.reconnect.status === true);
-
-	console.log(`[INFO] Auto ReConnect found in ${status.length} servers!`);
 
 	for (const data of maindata) {
 		const index = maindata.indexOf(data);

@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-unreachable */
 const Command = require('../../structures/CommandClass');
+
 const { SlashCommandBuilder, EmbedBuilder, AttachmentBuilder } = require('@discordjs/builders');
 
 const { get } = require('node-superfetch');

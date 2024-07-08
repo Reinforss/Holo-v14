@@ -7,7 +7,6 @@ const snek = require('node-superfetch');
 
 const userModel = require('../../schema/user');
 
-
 const prefix = ';';
 
 module.exports = class MessageCreate extends Event {
@@ -24,7 +23,11 @@ module.exports = class MessageCreate extends Event {
 		const mentionedUserIDs = message.mentions.users.map(user => user.id);
 		const mentionedMembers = await message.guild.members.fetch({ user: mentionedUserIDs });
 
-		const user = await userModel.findOne({ userID: message.author.id });
+		let user = await userModel.findOne({ userID: message.author.id });
+		if (!user) {
+			user = new userModel({ userID: message.author.id });
+		}
+
 		if (user && user.afk) {
 		  const notify = await message.reply(`⌨️ | Welcome back ${message.author.toString()} I've removed you from AFK Mode`);
 		  setTimeout(() => {
@@ -51,6 +54,26 @@ module.exports = class MessageCreate extends Event {
 		    }
 		  }
 		});
+
+		// Leveling System
+		const xpGain = Math.floor(Math.random() * 10) + 1;
+		user.experience += xpGain;
+
+		const xpToNextLevel = 5 * Math.pow(user.level, 2) + 50 * user.level + 100;
+
+		if (user.experience >= xpToNextLevel) {
+			user.level += 1;
+			user.experience = 0;
+
+			const levelUpEmbed = new EmbedBuilder()
+				.setColor('Green')
+				.setTitle('Level Up!')
+				.setDescription(`🎉 ${message.author.toString()} has leveled up to level ${user.level}!`);
+
+			await message.channel.send({ embeds: [levelUpEmbed] });
+		}
+
+		await user.save();
 
 		// command
 		if (!message.content.startsWith(prefix)) return;

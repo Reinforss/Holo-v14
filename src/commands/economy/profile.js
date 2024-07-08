@@ -1,4 +1,5 @@
 const Command = require('../../structures/CommandClass');
+
 const { SlashCommandBuilder } = require('@discordjs/builders');
 
 const { EmbedBuilder } = require('discord.js');
@@ -26,33 +27,55 @@ module.exports = class Profile extends Command {
 	}
 
 	async run(client, interaction) {
-        await interaction.deferReply();
+        // await interaction.deferReply();
+		try {
 
 		const user = interaction.options.getUser('user') || interaction.user;
 
-        const economyData = await ecoModel.findOne({ userID: user.id });
-        const funData = await funModel.findOne({ userID: user.id });
-        const userData = await userModel.findOne({ userID: user.id });
+        let economyData = await ecoModel.findOne({ userID: user.id });
+        let funData = await funModel.findOne({ userID: user.id });
+        let userData = await userModel.findOne({ userID: user.id });
 
         if (!economyData) {
-			new ecoModel({
-				username: user.username,
-				userID: user.id,
-				balance: 0,
-				dailyStreak: 1,
-			});
+			economyData = new ecoModel({ userID: user.id });
+			await economyData.save();
+		}
+
+		if (!userData) {
+			userData = new userModel({ userID: user.id });
+			await userData.save();
+		}
+
+		if (!funData) {
+			funData = new funModel({ userID: user.id });
+			await funData.save();
+		}
+
+		const currentLevel = userData.level || 0;
+		const currentXP = userData.experience || 0;
+		const nextLevelXP = 5 * Math.pow(currentLevel, 2) + 50 * currentLevel + 100;
+
+		const progress = Math.min((currentXP / nextLevelXP) * 10, 10);
+		const progressBar = '▰'.repeat(Math.floor(progress)) + '▱'.repeat(10 - Math.floor(progress));
 
         const embed = new EmbedBuilder()
             .setTitle(`${user.username}'s profile`)
             .setThumbnail(user.displayAvatarURL({ dynamic:true }))
             .addFields(
-                { name: '💰 Balance', value: `${economyData.balance || 0}`, inline: true },
-                { name: '✅ Reputation', value: `${funData.reputation || 0}`, inline: true },
-                { name: '⚙️ Command Run', value: `${userData.commandRun || 0}`, inline: true },
+				{ name: '**__Leveling__**', value: `Level: **\`${currentLevel}\`**\nExperience: **\`${currentXP}/${nextLevelXP}\`**\n${progressBar}` },
+                { name: '**__Balance__**', value: `${economyData.balance || 0}`, inline: true },
+                { name: '**__Reputation__**', value: `${funData.reputation || 0}`, inline: true },
+                { name: '**__Commands__**', value: `Total: **\`${userData.commandRun || 0}\`**\nMost Used: **\`${userData.mostUsedCommand || 'None'}\`**`, inline: true },
             )
             .setColor('Random');
 
-        return interaction.editReply({ embeds: [embed] });
+        return interaction.reply({ embeds: [embed] });
+	}
+ catch (error) {
+		console.error(`===================\n[ERROR] Command profile has encountered an error!\n\n${error.stack}\n===================`);
+		const errorEmbed = new EmbedBuilder().setTitle('OOPS! Something happened. Sorry!').setColor('Red').setDescription('Something went wrong with this command, this issue has been reported. Sorry for the Inconvenience');
+
+		return interaction.reply({ embeds: [errorEmbed], ephemeral: true });
 	}
 }
 };

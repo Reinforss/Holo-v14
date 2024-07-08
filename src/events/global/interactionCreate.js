@@ -1,6 +1,5 @@
 /* eslint-disable no-mixed-spaces-and-tabs */
 const Event = require('../../structures/EventClass');
-
 const { InteractionType } = require('discord.js');
 const User = require('../../schema/user');
 
@@ -28,18 +27,34 @@ module.exports = class InteractionCreate extends Event {
 				const user = await User.findOne({ userID: interaction.user.id });
 
 				if (user) {
-				  user.commandRun += 1;
-				  await user.save();
+					// Increment the command usage count
+					user.commandRun += 1;
+					const commandCount = user.commands.get(command.name) || 0;
+					user.commands.set(command.name, commandCount + 1);
+
+					// Determine if the current command is the most used
+					const mostUsedCommand = Array.from(user.commands.entries()).reduce((max, [key, value]) => value > max[1] ? [key, value] : max, [user.mostUsedCommand, 0]);
+
+					if (mostUsedCommand[0] !== user.mostUsedCommand) {
+						console.log(`[DEBUG] Command **${command.name}** has become the most used command. Previous most used command was **${user.mostUsedCommand}**.`);
+					}
+
+					user.mostUsedCommand = mostUsedCommand[0];
+					await user.save();
 				}
 				else {
-				  const newUser = new User({
+					// If user does not exist, create a new user entry
+					const newUser = new User({
 						userID: interaction.user.id,
 						commandRun: 1,
 						afk: null,
 						experience: 0,
 						level: 1,
-				  });
-				  await newUser.save();
+						commands: { [command.name]: 1 },
+						mostUsedCommand: command.name,
+					});
+					await newUser.save();
+					console.log(`[DEBUG] Command **${command.name}** is the first command recorded for the user and is set as the most used command.`);
 				}
 
 				console.log(`[INFO] Command Executed: ${command.name}`);

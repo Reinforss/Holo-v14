@@ -2,28 +2,27 @@
 const serverSchema = require('../schema/server');
 const userSchema = require('../schema/user');
 
-module.exports.fetchServer = async function(key) {
+async function fetchDocument(schema, key, newDocFields) {
 	try {
-		let serverData = await serverSchema.findOne({ key });
-		if (serverData) {
-			return serverData;
+		let doc = await schema.findOne({ key });
+		if (!doc) {
+			doc = new schema(newDocFields);
+			await doc.save();
 		}
-		serverData = new serverSchema({ Id: key });
-		await serverData.save().catch(err => console.log(err));
-		return serverData;
+		return doc;
 	}
 	catch (error) {
-		console.log('Failed', error);
+		console.error(`Failed to fetch document for key ${key}:`, error);
+		throw error;
 	}
+}
 
-	// eslint-disable-next-line no-shadow
-	module.exports.fetchUser = async function(key) {
-		let userData = await userSchema.findOne({ key });
-		if (userData) {
-			return userData;
-		}
-		userData = new userSchema({ userID: key });
-		await userData.save().catch(err => console.log(err));
-		return userData;
-	};
+module.exports = {
+	async fetchServer(key) {
+		return fetchDocument(serverSchema, key, { Id: key });
+	},
+
+	async fetchUser(key) {
+		return fetchDocument(userSchema, key, { userID: key });
+	},
 };

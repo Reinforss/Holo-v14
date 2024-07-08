@@ -1,4 +1,5 @@
 const Command = require('../../structures/CommandClass');
+
 const { SlashCommandBuilder } = require('@discordjs/builders');
 
 const { version } = require('../../../package.json');

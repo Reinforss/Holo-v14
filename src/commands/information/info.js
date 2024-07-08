@@ -1,4 +1,5 @@
 const Command = require('../../structures/CommandClass');
+
 const information = require('../../assets/json/information');
 const kitsu = require('node-kitsu');
 
