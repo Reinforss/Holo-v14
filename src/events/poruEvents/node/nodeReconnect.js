@@ -1,3 +1,3 @@
 module.exports.run = (client, node) => {
-	console.log(`[INFO] Node ${node.name} Reconnected!`);
+	console.log(`[${new Date().toString().split(' ', 5).join(' ')}][INFO] Node ${node.name} Reconnected!`);
 };

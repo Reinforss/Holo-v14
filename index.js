@@ -10,13 +10,13 @@ const connectToDatabase = () => new Promise((resolve, reject) => {
 	mongoose.connection.once('open', () => {
 		console.log(
 			`[${new Date().toString().split(' ', 5)
-				.join(' ')}] Database connected successfully.`,
+				.join(' ')}][DATABASE] Database connected successfully.`,
 		);
 		resolve();
 	});
 	mongoose.connection.on('error', error => {
 		console.error(`[${new Date().toString().split(' ', 5)
-			.join(' ')}] Database connection error:`, error);
+			.join(' ')}][DATABASE] Database connection error:`, error);
 		reject(error);
 	});
 });

@@ -1,7 +1,7 @@
 const Guild = require('../../../schema/server');
 
 module.exports.run = async (client, node) => {
-	console.log(`[MUSIC] Node ${node.name} is ready.`);
+	console.log(`[${new Date().toString().split(' ', 5).join(' ')}][MUSIC] Node ${node.name} is ready.`);
 
 	// This will auto reconnect when bot started or has been restarted
 	const maindata = await Guild.find();

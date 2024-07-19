@@ -1,3 +1,3 @@
 module.exports.run = (client, node) => {
-	console.log(`[WARN] Node ${node.name} Disconnected!`);
+	console.log(`[${new Date().toString().split(' ', 5).join(' ')}][WARN] Node ${node.name} Disconnected!`);
 };

@@ -41,15 +41,15 @@ const deploy = async () => {
 	try {
 		const clientId = process.env.CLIENTID;
 
-		console.log(`[${new Date().toString().split(' ', 5).join(' ')}] Started refreshing Slash Commands and Context Menus...`);
+		console.log(`[${new Date().toString().split(' ', 5).join(' ')}][COMMANDS] Started refreshing Slash Commands and Context Menus...`);
 
 		await rest.put(
 			Routes.applicationCommands(clientId),
 			{ body: commandData },
 		).then(() => {
-			console.log(`[${new Date().toString().split(' ', 5).join(' ')}] Slash Commands and Context Menus have now been deployed globally.`);
-			console.log(`[${new Date().toString().split(' ', 5).join(' ')}] Updated Commands: ${updatedCommands}`);
-			console.log(`[${new Date().toString().split(' ', 5).join(' ')}] Unchanged Commands: ${unchangedCommands}`);
+			console.log(`[${new Date().toString().split(' ', 5).join(' ')}][COMMANDS] Slash Commands and Context Menus have now been deployed`);
+			console.log(`[${new Date().toString().split(' ', 5).join(' ')}][COMMANDS] Updated Commands: ${updatedCommands}`);
+			console.log(`[${new Date().toString().split(' ', 5).join(' ')}][COMMANDS] Unchanged Commands: ${unchangedCommands}`);
 		});
 	}
 	catch (e) {
@@ -59,10 +59,10 @@ const deploy = async () => {
 
 // Create a HybridShardingManager instance
 const manager = new ClusterManager('./index.js', {
-	totalShards: 'auto',
+	totalShards: 3,
 	shardsPerClusters: 2,
 	totalClusters: 'auto',
-	mode: 'worker',
+	mode: 'process',
 	token: process.env.TOKEN,
 });
 
