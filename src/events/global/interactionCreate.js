@@ -51,7 +51,7 @@ module.exports = class InteractionCreate extends Event {
 					await newUser.save();
 				}
 
-				console.log(`[INFO] Command Executed: ${command.name}`);
+				console.log(`[${new Date().toString().split(' ', 5).join(' ')}][INFO] Command Executed: ${command.name}`);
 			}
 			catch (e) {
 				console.log(e);

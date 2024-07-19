@@ -35,7 +35,7 @@ module.exports = class Search extends Command {
 		if (!interaction.member.voice.channel) {
 			const errorEmbed = new EmbedBuilder().setColor('Red').setDescription('`❌` | You must be on voice channel to use this command!');
 
-			return interaction.editReply({ embeds: [errorEmbed] });
+			return interaction.reply({ embeds: [errorEmbed] });
 		}
 
 		if (player && interaction.member.voice.channelId !== interaction.guild.members.me.voice.channelId) {

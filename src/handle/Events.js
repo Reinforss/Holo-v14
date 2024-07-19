@@ -25,6 +25,6 @@ module.exports = class EventClass {
 				}
 			}
 		}
-		console.log(`[INFO] Bot Events : ${files.length} Events Loaded!`);
+		console.log(`[${new Date().toString().split(' ', 5).join(' ')}][INFO] Bot Events : ${files.length} Events Loaded!`);
 	}
 };

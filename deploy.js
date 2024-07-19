@@ -67,7 +67,7 @@ const manager = new ClusterManager('./index.js', {
 });
 
 manager.on('clusterCreate', async (cluster) => {
-	console.log(`[INFO] Launched Cluster ${cluster.id}`);
+	console.log(`[${new Date().toString().split(' ', 5).join(' ')}][INFO] Launched Cluster ${cluster.id}`);
 	await deploy();
 });
 

@@ -10,6 +10,6 @@ module.exports = class ShardError extends Event {
 
 	async run() {
 		const client = this.client;
-		console.log(`[SHARD] Shard ${client.cluster.id} encountered error!`);
+		console.log(`[${new Date().toString().split(' ', 5).join(' ')}][SHARD] Shard ${client.cluster.id} encountered error!`);
 	}
 };

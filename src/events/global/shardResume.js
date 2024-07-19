@@ -10,6 +10,6 @@ module.exports = class ShardResume extends Event {
 
 	async run() {
 		const client = this.client;
-		console.log(`[SHARD] Shard ${client.cluster.id} Resumed!`);
+		console.log(`[${new Date().toString().split(' ', 5).join(' ')}][SHARD] Shard ${client.cluster.id} Resumed!`);
 	}
 };

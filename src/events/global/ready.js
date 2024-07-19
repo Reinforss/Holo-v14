@@ -27,7 +27,7 @@ module.exports = class ReadyEvent extends Event {
 		//     client.user.setActivity(`${activity.text}`, { type: ActivityType.Playing });
 		// 	console.log('Activity changed');
 		//   }, 60000);
-		console.log('[INFO] Discord Bot is now online with');
+		console.log(`[${new Date().toString().split(' ', 5).join(' ')}][INFO] Discord Bot is now online`);
 
 		// setInterval(async () => {
 		// 	const guildEval = await client.cluster.broadcastEval(c => c.guilds.cache.size);

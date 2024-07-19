@@ -17,6 +17,6 @@ module.exports = (client) => {
 				console.log(`Error while loading poru event: \n${err}`);
 			}
 		}
-		console.log(`[INFO] Poru Events: ${dir}/${commands.length} Loaded!`);
+		console.log(`[${new Date().toString().split(' ', 5).join(' ')}][INFO] Poru Events: ${dir}/${commands.length} Loaded!`);
 	});
 };

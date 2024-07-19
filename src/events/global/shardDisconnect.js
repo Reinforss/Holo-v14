@@ -10,6 +10,6 @@ module.exports = class ShardDisconnect extends Event {
 
 	async run() {
 		const client = this.client;
-		console.log(`[SHARD] Shard ${client.cluster.id} Disconnected!`);
+		console.log(`[${new Date().toString().split(' ', 5).join(' ')}][SHARD] Shard ${client.cluster.id} Disconnected!`);
 	}
 };

@@ -25,6 +25,13 @@ module.exports = {
 			.setImage(image);
 	},
 
+	cooldownEmbed(title, description) {
+		return new EmbedBuilder()
+			.setColor('Red')
+			.setTitle(title)
+			.setDescription(description);
+	},
+
 	errorEmbed(title, description) {
 		return new EmbedBuilder()
 			.setColor('Red')
