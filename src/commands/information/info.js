@@ -188,7 +188,7 @@ module.exports = class Info extends Command {
 					URL: [Here](${emoji.imageURL()})
 					`,
 				);
-				interaction.reply({ embeds: [embed] });
+			interaction.reply({ embeds: [embed] });
 
 			break;
 		}

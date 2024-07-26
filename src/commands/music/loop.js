@@ -80,10 +80,10 @@ module.exports = class Loop extends Command {
 		if (player.loop === 'NONE') {
 			player.setLoop('TRACK');
 		}
-        else if (player.loop === 'TRACK') {
-            player.setLoop('QUEUE');
-        }
-        else if (player.loop === 'QUEUE') {
+		else if (player.loop === 'TRACK') {
+			player.setLoop('QUEUE');
+		}
+		else if (player.loop === 'QUEUE') {
 			player.setLoop('NONE');
 		}
 	}
