@@ -1,11 +1,10 @@
 /* eslint-disable no-mixed-spaces-and-tabs */
 /* eslint-disable no-loop-func */
 const Event = require('../../structures/EventClass');
-
 // const axios = require('axios');
 
 const { ActivityType } = require('discord.js');
-
+// const { getInfo } = require('discord-hybrid-sharding');
 // const activities = require('../../assets/json/status.json');
 
 const reminderModel = require('../../schema/reminder');
