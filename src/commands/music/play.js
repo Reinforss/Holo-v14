@@ -82,7 +82,7 @@ module.exports = class Play extends Command {
 			player.queue.add(track);
 
 			embed.setDescription(
-				`\`☑️\` | **[${track.info.title ? track.info.title : 'Unknown'}](${track.info.uri})** • \`${
+				`\`☑️\` | **[${track.info.title ? track.info.title : 'Unknown'}]** • \`${
 					track.info.isStream ? 'LIVE' : formatDuration(track.info.length)
 				}\` • ${interaction.user}`,
 			);
