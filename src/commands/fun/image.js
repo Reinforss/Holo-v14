@@ -36,19 +36,6 @@ module.exports = class Image extends Command {
 						.setDescription('Text for changemymind')
 						.setRequired(true),
 					),
-				)
-				.addSubcommand(subcommand => subcommand
-					.setName('tweet')
-					.setDescription('[Holo | Fun | Image] Tweet as yourself or someone')
-					.addStringOption(option => option
-						.setName('text')
-						.setDescription('The text you want to add')
-						.setRequired(true),
-					)
-					.addUserOption(option => option
-						.setName('user')
-						.setDescription('The user you want to tweet. Optional'),
-					),
 				),
 			usage: 'image <option>',
 			category: 'Fun',
@@ -108,16 +95,6 @@ module.exports = class Image extends Command {
 
 			interaction.editReply({ embeds: [embed] });
 			break;
-		}
-		case 'tweet': {
-			const { body } = await get(`https://nekobot.xyz/api/imagegen?type=tweet&username=${user.username}&text=${text}`);
-			const embed = new EmbedBuilder()
-				.setImage(body.message)
-				.setColor('Random')
-				.setTimestamp();
-
-				interaction.editReply({ embeds: [embed] });
-				break;
 		}
 		}
 	}
