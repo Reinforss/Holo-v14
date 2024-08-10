@@ -22,10 +22,7 @@ module.exports = class Loop extends Command {
 	async run(client, interaction) {
 		const player = client.poru.players.get(interaction.guild.id);
 
-		await interaction.deferReply();
-
 		const voiceChannel = interaction.member.voice.channel;
-		const requester = player.currentTrack.info.requester;
 		const memberCount = voiceChannel ? voiceChannel.members.size : 1;
 		const majority = Math.ceil(memberCount / 2);
 
@@ -37,29 +34,28 @@ module.exports = class Loop extends Command {
 		if (!interaction.member.voice.channel) {
 			const errorEmbed = new EmbedBuilder().setColor('Red').setDescription('`❌` | You must be on voice channel to use this command!');
 
-			return interaction.editReply({ embeds: [errorEmbed] });
+			return interaction.editReply({ embeds: [errorEmbed], ephemeral: true });
 		}
 
 		if (player && interaction.member.voice.channelId !== interaction.guild.members.me.voice.channelId) {
 			const errorEmbed = new EmbedBuilder().setColor('Red').setDescription('`❌` | You must be on the same voice channel as me to use this command.');
 
-			return interaction.editReply({ embeds: [errorEmbed] });
+			return interaction.editReply({ embeds: [errorEmbed], ephemeral: true });
 		}
+		else {
+			const requester = player.currentTrack.info.requester;
 
-		if (interaction.user.id === requester) {
-			this.toggleLoopMode(player);
+		if (interaction.user.id == requester) {
+			toggleLoopMode(player);
+			votes.clear();
 			const requestEmbed = new EmbedBuilder()
 				.setColor('Green')
-				.setDescription(`\`✅\` | Loop mode: ${capital(player.loop)}`);
+				.setDescription(`\`✅\` | Loop mode: **${capital(player.loop)}**`);
 			return interaction.editReply({ embeds: [requestEmbed] });
 		}
 
-		if (votes.has(interaction.user.id)) {
-			return interaction.editReply({ content: 'You have already voted to change the loop mode.', ephemeral: true });
-		}
-
-		votes.add(interaction.user.id);
-
+		if (!votes.has(interaction.user.id)) {
+			votes.add(interaction.user.id);
 		const voteEmbed = new EmbedBuilder()
 			.setColor('Yellow')
 			.setDescription(`\`🗳️\` | ${interaction.user} has voted to change the loop mode. \`${votes.size}/${majority}\` votes needed.`);
@@ -67,28 +63,30 @@ module.exports = class Loop extends Command {
 		await interaction.editReply({ embeds: [voteEmbed] });
 
 		if (votes.size >= majority) {
-			this.toggleLoopMode(player);
+			toggleLoopMode(player);
 			const successEmbed = new EmbedBuilder()
 				.setColor('Green')
 				.setDescription(`\`✅\` | Loop mode has been changed to **${capital(player.loop)}** by vote.`);
-			this.resetVotes();
+
+			votes.clear();
 			return interaction.editReply({ embeds: [successEmbed] });
 		}
 	}
-
-	toggleLoopMode(player) {
-		if (player.loop === 'NONE') {
-			player.setLoop('TRACK');
-		}
-		else if (player.loop === 'TRACK') {
-			player.setLoop('QUEUE');
-		}
-		else if (player.loop === 'QUEUE') {
-			player.setLoop('NONE');
-		}
+	else {
+			return interaction.editReply({ content: 'You have already voted to change the loop mode.', ephemeral: true });
 	}
-
-	resetVotes() {
-		votes.clear();
 	}
+}
 };
+
+async function toggleLoopMode(player) {
+	if (player.loop === 'NONE') {
+		await player.setLoop('TRACK');
+	}
+	else if (player.loop === 'TRACK') {
+		await player.setLoop('QUEUE');
+	}
+	else if (player.loop === 'QUEUE') {
+		await player.setLoop('NONE');
+	}
+}

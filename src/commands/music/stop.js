@@ -23,25 +23,33 @@ module.exports = class Stop extends Command {
 		const player = client.poru.players.get(interaction.guild.id);
 
 		const voiceChannel = interaction.member.voice.channel;
-		const requester = player.currentTrack.info.requester;
 		const memberCount = voiceChannel ? voiceChannel.members.size : 1;
 
 		if (!player) {
 			const noPlayer = new EmbedBuilder().setColor('Red').setDescription('`❌` | No song are currently being played.');
 
-			return interaction.reply({ embeds: [noPlayer] });
+			return interaction.reply({ embeds: [noPlayer], ephemeral: true });
 		}
 
 		if (!interaction.member.voice.channel) {
 			const errorEmbed = new EmbedBuilder().setColor('Red').setDescription('`❌` | You must be on voice channel to use this command!').setTimestamp();
 
-			return interaction.editReply({ embeds: [errorEmbed] });
+			return interaction.editReply({ embeds: [errorEmbed], ephemeral: true });
 		}
 
 		if (player && interaction.member.voice.channelId !== interaction.guild.members.me.voice.channelId) {
 			const errorEmbed = new EmbedBuilder().setColor('Red').setDescription('`❌` | You must be on the same voice channel as me to use this command.');
 
-			return interaction.editReply({ embeds: [errorEmbed] });
+			return interaction.editReply({ embeds: [errorEmbed], ephemeral: true });
+		}
+		else {
+			const requester = player.currentTrack.info.requester;
+
+		if (!voiceChannel.members.has(requester)) {
+			await player.destroy();
+			const embed = new EmbedBuilder().setColor('Green').setDescription('`👋` | Player has been `Disconnected`.');
+			votes.clear();
+			return interaction.reply({ embeds: [embed] });
 		}
 
 		if (interaction.user.id == requester) {
@@ -72,17 +80,18 @@ module.exports = class Stop extends Command {
 
 				votes.clear();
 
-				return interaction.reply({ embeds: [skipEmbed] });
+				return interaction.reply({ embeds: [skipEmbed], ephemeral: false });
 			}
 		}
 		else {
 			const embed = new EmbedBuilder()
 				.setColor('Yellow')
-				.setDescription('`🗳️` | You already voted to stop!');
+				.setDescription('`🗳️` | You already voted.');
 
-			interaction.reply({ embeds: [embed] });
+			interaction.reply({ embeds: [embed], ephemeral: true });
 		}
 
 
 	}
+}
 };

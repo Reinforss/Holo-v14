@@ -8,6 +8,7 @@ const {
 } = require('discord.js');
 const formatDuration = require('../../../util/FormatDuration.js');
 const capital = require('node-capitalize');
+const capitalize = require('node-capitalize');
 
 module.exports.run = async (client, player, track) => {
 	if (!player) return;
@@ -56,37 +57,6 @@ module.exports.run = async (client, player, track) => {
 	const bVUp = new ButtonBuilder().setCustomId('volup').setEmoji(emoji.volup).setStyle(ButtonStyle.Secondary);
 	const bInfo = new ButtonBuilder().setCustomId('info').setEmoji(emoji.info).setStyle(ButtonStyle.Secondary);
 
-	// const filters = new StringSelectMenuBuilder()
-	// 	.setCustomId('filters')
-	// 	.setPlaceholder('Click Here To Apply Filters!')
-	// 	.addOptions(
-	// 		new StringSelectMenuOptionBuilder()
-	// 			.setLabel('Clear Filters')
-	// 			.setDescription('Click To Reset All Filter.')
-	// 			.setValue('clear'),
-	// 		new StringSelectMenuOptionBuilder()
-	// 			.setLabel('8D Filter')
-	// 			.setDescription('Click To Apply 8D Filter.')
-	// 			.setValue('8d'),
-	// 		new StringSelectMenuOptionBuilder()
-	// 			.setLabel('Earrape Filter')
-	// 			.setDescription('Click To Apply Earrape Filter.')
-	// 			.setValue('earrape'),
-	// 		new StringSelectMenuOptionBuilder()
-	// 			.setLabel('Nightcore Filter')
-	// 			.setDescription('Click To Apply Nightcore Filter.')
-	// 			.setValue('nightcore'),
-	// 		new StringSelectMenuOptionBuilder()
-	// 			.setLabel('Slowmode Filter')
-	// 			.setDescription('Click To Apply Slowmode Filter.')
-	// 			.setValue('slowmode'),
-	// 		new StringSelectMenuOptionBuilder()
-	// 			.setLabel('Vaporwave Filter')
-	// 			.setDescription('Click To Apply Vaporwave Filter.')
-	// 			.setValue('vaporwave'),
-	// 	);
-
-	// const menu = new ActionRowBuilder().addComponents(filters);
 	const button = new ActionRowBuilder().addComponents(bReplay, bPrev, bPause, bSkip, bLoop);
 	const button2 = new ActionRowBuilder().addComponents(bShuffle, bVDown, bStop, bVUp, bInfo);
 
@@ -335,15 +305,6 @@ module.exports.run = async (client, player, track) => {
 				const Part = Math.floor((player.position / player.currentTrack.info.length) * 30);
 				const Emoji = player.isPlaying ? '🕒 |' : '⏸ |';
 
-				// let sources = 'Unknown';
-
-				// if (player.currentTrack.info.sourceName === 'youtube') sources = 'Youtube';
-				// else if (player.currentTrack.info.sourceName === 'soundcloud') sources = 'SoundCloud';
-				// else if (player.currentTrack.info.sourceName === 'spotify') sources = 'Spotify';
-				// else if (player.currentTrack.info.sourceName === 'applemusic') sources = 'Apple Music';
-				// else if (player.currentTrack.info.sourceName === 'bandcamp') sources = 'Bandcamp';
-				// else if (player.currentTrack.info.sourceName === 'http') sources = 'HTTP';
-
 				const embed = new EmbedBuilder()
 					.setAuthor({
 						name: player.isPlaying ? 'Now Playing' : 'Song Paused',
@@ -354,9 +315,9 @@ module.exports.run = async (client, player, track) => {
 					.addFields([
 						{ name: 'Author:', value: `${currentAuthor}`, inline: true },
 						{ name: 'Requested By:', value: `${player.currentTrack.info.requester}`, inline: true },
-						// { name: 'Source:', value: `${sources}`, inline: true },
 						{ name: 'Duration:', value: `${playerDuration}`, inline: true },
 						{ name: 'Volume:', value: `${player.volume}%`, inline: true },
+						{ name: 'Loop Mode:', value: `${capitalize(player.loop)}`, inline: true },
 						{ name: 'Queue Left:', value: `${player.queue.length}`, inline: true },
 						{
 							name: `Song Progress: \`[${currentPosition}]\``,
@@ -369,66 +330,6 @@ module.exports.run = async (client, player, track) => {
 					.setTimestamp();
 
 				return message.reply({ embeds: [embed], ephemeral: true });
-			}
-		}
-		else if (message.customId === 'filters') {
-			if (!player) {
-				collector.stop();
-			}
-			else {
-				await message.deferUpdate();
-
-				const selectedFilter = message.values[0];
-
-				if (selectedFilter) {
-					if (selectedFilter === 'clear') {
-						const embed = new EmbedBuilder().setDescription('`☑️` | Filters has been cleared.').setColor('Green');
-
-						await player.node.rest.updatePlayer({
-							serverID: player.serverID,
-							data: { filters: {} },
-						});
-
-						await player.setVolume(100);
-
-						return message.followUp({ embeds: [embed], ephemeral: true });
-					}
-					else if (selectedFilter === '8d') {
-						const embed = new EmbedBuilder().setDescription('`☑️` | 8D filter activated.').setColor('Green');
-
-						await player.filters.set8D(true);
-
-						return message.followUp({ embeds: [embed], ephemeral: true });
-					}
-					else if (selectedFilter === 'earrape') {
-						const embed = new EmbedBuilder().setDescription('`☑️` | Earrape filter activated.').setColor('Green');
-
-						await player.setVolume(500);
-
-						return message.followUp({ embeds: [embed], ephemeral: true });
-					}
-					else if (selectedFilter === 'nightcore') {
-						const embed = new EmbedBuilder().setDescription('`☑️` | Nightcore filter activated.').setColor('Green');
-
-						await player.filters.setNightcore(true);
-
-						return message.followUp({ embeds: [embed], ephemeral: true });
-					}
-					else if (selectedFilter === 'slowmode') {
-						const embed = new EmbedBuilder().setDescription('`☑️` | Slowmode filter activated.').setColor('Green');
-
-						await player.filters.setSlowmode(true);
-
-						return message.followUp({ embeds: [embed], ephemeral: true });
-					}
-					else if (selectedFilter === 'vaporwave') {
-						const embed = new EmbedBuilder().setDescription('`☑️` | Vaporwave filter activated.').setColor('Green');
-
-						await player.filters.setVaporwave(true);
-
-						return message.followUp({ embeds: [embed], ephemeral: true });
-					}
-				}
 			}
 		}
 	});

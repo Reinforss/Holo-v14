@@ -3,8 +3,8 @@
 const Event = require('../../structures/EventClass');
 
 const { ActivityType } = require('discord.js');
-const { getInfo } = require('discord-hybrid-sharding');
-const axios = require('axios');
+// const { getInfo } = require('discord-hybrid-sharding');
+// const axios = require('axios');
 // const activities = require('../../assets/json/status.json');
 
 const reminderModel = require('../../schema/reminder');
@@ -28,12 +28,12 @@ module.exports = class ReadyEvent extends Event {
 		//   }, 60000);
 		console.log(`[${new Date().toString().split(' ', 5).join(' ')}][INFO] Discord Bot is now online`);
 
-		setInterval(async () => {
-			const guildEval = await client.cluster.broadcastEval(c => c.guilds.cache.size);
-			const serverCount = guildEval.reduce((prev, val) => prev + val, 0);
+		// setInterval(async () => {
+		// 	const guildEval = await client.cluster.broadcastEval(c => c.guilds.cache.size);
+		// 	const serverCount = guildEval.reduce((prev, val) => prev + val, 0);
 
-			axios.post('https://top.gg/api/bots/519521318719324181/stats', { server_count: serverCount, shard_count: getInfo().TOTAL_SHARDS }, { headers: { 'Authorization': process.env.TOPGGTOKEN } });
-		}, 60000);
+		// 	axios.post('https://top.gg/api/bots/519521318719324181/stats', { server_count: serverCount, shard_count: getInfo().TOTAL_SHARDS }, { headers: { 'Authorization': process.env.TOPGGTOKEN } });
+		// }, 60000);
 
 		try {
 			await client.poru.init(client);

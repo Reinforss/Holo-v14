@@ -21,25 +21,24 @@ module.exports = class Skip extends Command {
 
 	async run(client, interaction) {
 		const player = client.poru.players.get(interaction.guild.id);
-		await interaction.deferReply({ ephemeral: false });
 
 		const voiceChannel = interaction.member.voice.channel;
 
 		if (!player) {
 			const embed = new EmbedBuilder().setDescription('`❌` | No song are currently being played').setColor('Red');
-			return interaction.editReply({ embeds: [embed] });
+			return interaction.editReply({ embeds: [embed], ephemeral: true });
 		}
 
 		if (!interaction.member.voice.channel) {
 			const errorEmbed = new EmbedBuilder().setColor('Red').setDescription('`❌` | You must be on voice channel to use this command!');
 
-			return interaction.editReply({ embeds: [errorEmbed] });
+			return interaction.editReply({ embeds: [errorEmbed], ephemeral: true });
 		}
 
 		if (player && interaction.member.voice.channelId !== interaction.guild.members.me.voice.channelId) {
 			const errorEmbed = new EmbedBuilder().setColor('Red').setDescription('`❌` | You must be on the same voice channel as mine to use this command.');
 
-			return interaction.editReply({ embeds: [errorEmbed] });
+			return interaction.editReply({ embeds: [errorEmbed], ephemeral: true });
 		}
 
 		else {
@@ -82,10 +81,8 @@ module.exports = class Skip extends Command {
 					.setColor('Yellow')
 					.setDescription('`🗳️` | You already voted to skip!');
 
-				interaction.editReply({ embeds: [embed] });
+				interaction.editReply({ embeds: [embed], ephemeral: true });
 			}
-
-
 		}
 	}
 };

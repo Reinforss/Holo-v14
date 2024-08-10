@@ -5,6 +5,7 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 const { EmbedBuilder } = require('discord.js');
 
 const formatDuration = require('../../util/FormatDuration');
+const capital = require('node-capitalize');
 
 module.exports = class NowPlaying extends Command {
 	constructor(client) {
@@ -69,6 +70,7 @@ module.exports = class NowPlaying extends Command {
 					// { name: 'Source:', value: `${sources}`, inline: true },
 					{ name: 'Duration:', value: `${playerDuration}`, inline: true },
 					{ name: 'Volume:', value: `${player.volume}%`, inline: true },
+					{ name: 'Loop Mode:', value: `${capital(player.loop)}`, inline: true },
 					{ name: 'Queue Left:', value: `${player.queue.length}`, inline: true },
 					{
 						name: `Song Progress: \`[${currentPosition}]\``,
