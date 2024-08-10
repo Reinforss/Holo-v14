@@ -27,6 +27,28 @@ module.exports = class Image extends Command {
 						.setName('user')
 						.setDescription('The user you want to turn into captcha'),
 					),
+				)
+				.addSubcommand(subcommand => subcommand
+					.setName('changemymind')
+					.setDescription('[Holo | Fun | Image] Change my mind')
+					.addStringOption(option => option
+						.setName('text')
+						.setDescription('Text for changemymind')
+						.setRequired(true),
+					),
+				)
+				.addSubcommand(subcommand => subcommand
+					.setName('tweet')
+					.setDescription('[Holo | Fun | Image] Tweet as yourself or someone')
+					.addStringOption(option => option
+						.setName('text')
+						.setDescription('The text you want to add')
+						.setRequired(true),
+					)
+					.addUserOption(option => option
+						.setName('user')
+						.setDescription('The user you want to tweet. Optional'),
+					),
 				),
 			usage: 'image <option>',
 			category: 'Fun',
@@ -41,6 +63,7 @@ module.exports = class Image extends Command {
 		const subcommand = interaction.options.getSubcommand();
 
 		const user = interaction.options.getUser('user') || interaction.user;
+		const text = interaction.options.getString('text');
 		switch (subcommand) {
 		case 'kemonomimi': {
 			const { body } = await get('https://nekobot.xyz/api/image?type=kemonomimi');
@@ -75,6 +98,26 @@ module.exports = class Image extends Command {
 
 			interaction.editReply({ embeds: [embed] });
 			break;
+		}
+		case 'changemymind': {
+			const { body } = await get(`https://nekobot.xyz/api/imagegen?type=changemymind&text=${text}`);
+			const embed = new EmbedBuilder()
+				.setImage(body.message)
+				.setColor('Random')
+				.setTimestamp();
+
+			interaction.editReply({ embeds: [embed] });
+			break;
+		}
+		case 'tweet': {
+			const { body } = await get(`https://nekobot.xyz/api/imagegen?type=tweet&username=${user.username}&text=${text}`);
+			const embed = new EmbedBuilder()
+				.setImage(body.message)
+				.setColor('Random')
+				.setTimestamp();
+
+				interaction.editReply({ embeds: [embed] });
+				break;
 		}
 		}
 	}
