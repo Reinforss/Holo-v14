@@ -18,6 +18,7 @@ module.exports = class Pause extends Command {
 	}
 
 	async run(client, interaction) {
+		try {
 		const player = client.poru.players.get(interaction.guild.id);
 
 		if (!player) {
@@ -63,4 +64,9 @@ module.exports = class Pause extends Command {
 
 		return interaction.reply({ embeds: [embed] });
 	}
+	catch (e) {
+		await client.hook.sendError('An error occurred', `${e.stack.split('\n')[0]}\n${e.stack.split('\n')[1]}`);
+		return interaction.reply({ embeds: [client.embeds.errorEmbed('An error has occured', 'Something went wrong with this command, this issue has been reported. Sorry for the Inconvenience')], ephemeral: true });
+	}
+}
 };

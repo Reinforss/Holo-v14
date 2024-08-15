@@ -26,6 +26,7 @@ module.exports = class Daily extends Command {
 
 	async run(client, interaction) {
 		if (!this.run) throw new RangeError('Expected a run method');
+		try {
 
 		const user = interaction.options.getUser('user') || interaction.user;
 		if (user.bot) return interaction.reply('You can\'t give daily to a bot!');
@@ -115,4 +116,9 @@ module.exports = class Daily extends Command {
 			return interaction.reply(`You have given your daily reward of **${baseReward} credits** to **${user.username}**.\nYour Current Daily Streak: **${giverEconomy.dailyStreak} days**`);
 		}
 	}
+	catch (e) {
+		await client.hook.sendError('An error occurred', `${e.stack.split('\n')[0]}\n${e.stack.split('\n')[1]}`);
+		return interaction.reply({ embeds: [client.embeds.errorEmbed('An error has occured', 'Something went wrong with this command, this issue has been reported. Sorry for the Inconvenience')], ephemeral: true });
+	}
+}
 };

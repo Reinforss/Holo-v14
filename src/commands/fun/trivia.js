@@ -143,7 +143,8 @@ module.exports = class Trivia extends Command {
 			});
 		}
 		catch (e) {
-			interaction.channel.get('1240287042123071559').send(`An error has happened in Trivia.js\n${e.message}`);
+			await client.hook.sendError('An error occurred', `${e.stack.split('\n')[0]}\n${e.stack.split('\n')[1]}`);
+			return interaction.reply({ embeds: [client.embeds.errorEmbed('An error has occured', 'Something went wrong with this command, this issue has been reported. Sorry for the Inconvenience')], ephemeral: true });
 		}
 	}
 };

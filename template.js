@@ -15,7 +15,12 @@ module.exports = class Example extends Command {
 		});
 	}
 
-	run() {
+	async run(client) {
+		try {
 		if (!this.run) throw new RangeError('Expected a run method');
+		}
+		catch (e) {
+			await client.hook.sendError('An error occurred', `**${e.stack.split('\n')[0]}**\n${e.stack.split('\n').slice(1).join('\n')}`);
+		}
 	}
 };

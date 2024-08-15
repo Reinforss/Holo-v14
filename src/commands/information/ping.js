@@ -19,6 +19,7 @@ module.exports = class Ping extends Command {
 	}
 
 	async run(client, interaction) {
+		try {
 		const now = Date.now();
 		const pingEmbed = new EmbedBuilder()
 			.setAuthor({
@@ -33,4 +34,9 @@ module.exports = class Ping extends Command {
 
 		return await interaction.reply({ embeds: [pingEmbed] });
 	}
+	catch (e) {
+		await client.hook.sendError('An error occurred', `${e.stack.split('\n')[0]}\n${e.stack.split('\n')[1]}`);
+		return interaction.reply({ embeds: [client.embeds.errorEmbed('An error has occured', 'Something went wrong with this command, this issue has been reported. Sorry for the Inconvenience')], ephemeral: true });
+	}
+}
 };

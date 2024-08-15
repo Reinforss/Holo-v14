@@ -19,7 +19,8 @@ module.exports = class Avatar extends Command {
 		});
 	}
 
-	run(client, interaction) {
+	async run(client, interaction) {
+		try {
 		const user = interaction.options.getUser('user') || interaction.user;
 		const embed = new EmbedBuilder()
 			.setTitle(`${user.tag} Avatar`)
@@ -28,4 +29,9 @@ module.exports = class Avatar extends Command {
 
 		interaction.reply({ embeds: [embed] });
 	}
+	catch (e) {
+		await client.hook.sendError('An error occurred', `${e.stack.split('\n')[0]}\n${e.stack.split('\n')[1]}`);
+		return interaction.reply({ embeds: [client.embeds.errorEmbed('An error has occured', 'Something went wrong with this command, this issue has been reported. Sorry for the Inconvenience')], ephemeral: true });
+	}
+}
 };

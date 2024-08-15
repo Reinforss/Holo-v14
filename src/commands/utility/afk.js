@@ -24,6 +24,7 @@ module.exports = class Afk extends Command {
 	}
 
 	async run(client, interaction) {
+		try {
 		if (!this.run) throw new RangeError('Expected a run method');
 
 		let reason = interaction.options.getString('reason');
@@ -37,8 +38,11 @@ module.exports = class Afk extends Command {
 		);
 
 		await interaction.reply(`AFK status set: ${reason}`);
-	} async catch(error) {
-		console.error(error);
-		await interaction.reply('An error occurred while setting AFK status.');
 	}
+	catch (e) {
+		await client.hook.sendError('An error occurred', `${e.stack.split('\n')[0]}\n${e.stack.split('\n')[1]}`);
+		return interaction.reply({ embeds: [client.embeds.errorEmbed('An error has occured', 'Something went wrong with this command, this issue has been reported. Sorry for the Inconvenience')], ephemeral: true });
+	}
+}
+
 };

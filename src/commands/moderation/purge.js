@@ -27,6 +27,7 @@ module.exports = class Purge extends Command {
 		});
 	}
 	async run(client, interaction) {
+		try {
 		if (!interaction.guild.members.cache.get(client.user.id).permissions.has(PermissionsBitField.Flags.ManageMessages)) {
 			return interaction.reply({ embeds: [client.embeds.missingPermsEmbed('I need the \'manage messages\' permission to purge messages.', 'Make sure I have the correct permission to do this.')], ephemeral: true });
 		}
@@ -59,9 +60,14 @@ module.exports = class Purge extends Command {
 			}
 		}
 		catch (error) {
-			interaction.channel.get('1240287042123071559').send(`An error has happened in purge.js\n${error.message}`);
+			interaction.channel.get('1240287042123071559').send(`An error has happened in purge\n${error.message}`);
 			return interaction.reply({ embeds: [client.embeds.errorEmbed('Deleting messages failed', `${error.message}`)] });
 		}
 	}
+	catch (e) {
+		await client.hook.sendError('An error occurred', `${e.stack.split('\n')[0]}\n${e.stack.split('\n')[1]}`);
+		return interaction.reply({ embeds: [client.embeds.errorEmbed('An error has occured', 'Something went wrong with this command, this issue has been reported. Sorry for the Inconvenience')], ephemeral: true });
+	}
+}
 
 };

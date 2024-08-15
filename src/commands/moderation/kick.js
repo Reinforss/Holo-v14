@@ -33,6 +33,7 @@ module.exports = class Kick extends Command {
 		});
 	}
 	async run(client, interaction) {
+		try {
 		if (!interaction.guild.members.cache.get(client.user.id).permissions.has(PermissionsBitField.Flags.KickMembers)) {
 			return interaction.reply({ embeds: [client.embeds.missingPermsEmbed('I need the \'Kick Members\' permission to kick members.', 'Make sure I have the correct permission to do this.')], ephemeral: true });
 		}
@@ -91,6 +92,9 @@ module.exports = class Kick extends Command {
 				interaction.reply({ embeds: [client.embeds.errorEmbed('Failed to send DM to user.', 'The user has DM disabled')], ephemeral: true });
 			});
 	}
-
-
+	catch (e) {
+		await client.hook.sendError('An error occurred', `${e.stack.split('\n')[0]}\n${e.stack.split('\n')[1]}`);
+		return interaction.reply({ embeds: [client.embeds.errorEmbed('An error has occured', 'Something went wrong with this command, this issue has been reported. Sorry for the Inconvenience')], ephemeral: true });
+	}
+}
 };

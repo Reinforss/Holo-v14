@@ -59,7 +59,7 @@ const deploy = async () => {
 
 // Create a HybridShardingManager instance
 const manager = new ClusterManager('./index.js', {
-	totalShards: 3,
+	totalShards: 'auto',
 	shardsPerClusters: 2,
 	totalClusters: 'auto',
 	mode: 'process',

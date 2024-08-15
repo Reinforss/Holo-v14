@@ -32,6 +32,7 @@ module.exports = class Ship extends Command {
 	}
 
 	async run(client, interaction) {
+		try {
 		await interaction.deferReply();
 
 		const shipped = interaction.options.getUser('user1');
@@ -58,4 +59,9 @@ module.exports = class Ship extends Command {
 
 		return interaction.editReply({ embeds: [embed] });
 	}
+	catch (e) {
+		await client.hook.sendError('An error occurred', `${e.stack.split('\n')[0]}\n${e.stack.split('\n')[1]}`);
+		return interaction.reply({ embeds: [client.embeds.errorEmbed('An error has occured', 'Something went wrong with this command, this issue has been reported. Sorry for the Inconvenience')], ephemeral: true });
+	}
+}
 };

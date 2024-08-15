@@ -26,6 +26,7 @@ module.exports = class Balance extends Command {
 
 	async run(client, interaction) {
 		if (!this.run) throw new RangeError('Expected a run method');
+		try {
 
 		const user = interaction.options.getUser('user') || interaction.user;
 		if (user.bot) return interaction.reply('Bots cannot have a money!');
@@ -52,4 +53,9 @@ module.exports = class Balance extends Command {
 			return interaction.reply(`**${user.username}** credits is **${economy.balance} credits.**`);
 		}
 	}
+	catch (e) {
+		await client.hook.sendError('An error occurred', `${e.stack.split('\n')[0]}\n${e.stack.split('\n')[1]}`);
+		return interaction.reply({ embeds: [client.embeds.errorEmbed('An error has occured', 'Something went wrong with this command, this issue has been reported. Sorry for the Inconvenience')], ephemeral: true });
+	}
+}
 };

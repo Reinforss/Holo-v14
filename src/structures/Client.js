@@ -34,6 +34,7 @@ module.exports = class Bot extends Client {
 		this.util = require('../util/util.js');
 		this.Database = require('./mongoose.js');
 		this.embeds = require('../../src/assets/json/embeds');
+		this.hook = require('../../src/assets/json/webhook');
 
 		this.helps = new Collection();
 		this.commands = new Collection();

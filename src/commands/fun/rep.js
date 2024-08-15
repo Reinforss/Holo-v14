@@ -1,6 +1,6 @@
 const Command = require('../../structures/CommandClass');
 
-const { SlashCommandBuilder, EmbedBuilder } = require('@discordjs/builders');
+const { SlashCommandBuilder } = require('@discordjs/builders');
 const funModel = require('../../schema/fun');
 
 const dailyCooldown = 24 * 60 * 60 * 1000;
@@ -86,15 +86,9 @@ module.exports = class Reputation extends Command {
 			return interaction.editReply({ content: `You have given your reputation to **${user.username}**` });
 
 		}
-		catch (error) {
-			console.error(error);
-
-			const ErrorEmbed = new EmbedBuilder()
-				.setTitle('An error has occured!')
-				.setDescription('Please try this command again')
-				.setColor('Red');
-
-			return interaction.editReply({ embeds: [ErrorEmbed] });
+		catch (e) {
+			await client.hook.sendError('An error occurred', `${e.stack.split('\n')[0]}\n${e.stack.split('\n')[1]}`);
+			return interaction.reply({ embeds: [client.embeds.errorEmbed('An error has occured', 'Something went wrong with this command, this issue has been reported. Sorry for the Inconvenience')], ephemeral: true });
 		}
 	}
 };
