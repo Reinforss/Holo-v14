@@ -2,6 +2,7 @@ const { WebhookClient, EmbedBuilder } = require('discord.js');
 const URI = process.env.WEBHOOK;
 
 const webhookClient = new WebhookClient({ url: URI });
+if (!URI) return;
 
 module.exports = {
     sendError: async (title, description) => {
