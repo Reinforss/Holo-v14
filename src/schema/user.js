@@ -18,7 +18,6 @@ const userSchema = mongoose.Schema({
 		default: 0,
 		type: Number,
 	},
-
 	mostUsedCommand: {
 		default: '',
 		type: String,
@@ -28,15 +27,20 @@ const userSchema = mongoose.Schema({
 		of: Number,
 		default: {},
 	},
-
-	experience: {
-		default: 0,
-		type: Number,
+	globalLevel: {
+		experience: { type: Number, default: 0 },
+		level: { type: Number, default: 1 },
+		titles: [{
+			title: { type: String, required: true },
+			dateAchieved: { type: Date, default: Date.now },
+		}],
 	},
-	level: {
-		type: Number,
-		default: 1,
-	},
+	localLevels: [{
+		serverID: { type: String, required: true },
+		experience: { type: Number, default: 0 },
+		level: { type: Number, default: 1 },
+	}],
+	lastXPTime: { type: Date, default: Date.now },
 });
 
 module.exports = mongoose.model('user', userSchema);

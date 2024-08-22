@@ -18,14 +18,12 @@ module.exports = class ReadyEvent extends Event {
 	}
 
 	async run(client) {
+		setInterval(async () => {
+			const guildEval = await client.cluster.broadcastEval(c => c.guilds.cache.size);
+			const serverCount = guildEval.reduce((prev, val) => prev + val, 0);
+		    client.user.setActivity(`/help | In ${serverCount} Servers`, { type: ActivityType.Playing });
+		  }, 60000);
 
-		client.user.setActivity('Back soon!', { type: ActivityType.Playing });
-		// setInterval(() => {
-		//     const activity = activities[Math.floor(Math.random() * activities.length)];
-		// 	console.log(activity.text);
-		//     client.user.setActivity(`${activity.text}`, { type: ActivityType.Playing });
-		// 	console.log('Activity changed');
-		//   }, 60000);
 		console.log(`[${new Date().toString().split(' ', 5).join(' ')}][INFO] Discord Bot is now online`);
 
 		// setInterval(async () => {

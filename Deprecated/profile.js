@@ -1,12 +1,12 @@
-const Command = require('../../structures/CommandClass');
+const Command = require('../src/structures/CommandClass');
 
 const { SlashCommandBuilder } = require('@discordjs/builders');
 
 const { EmbedBuilder } = require('discord.js');
 
-const funModel = require('../../schema/fun');
-const ecoModel = require('../../schema/economy');
-const userModel = require('../../schema/user');
+const funModel = require('../src/schema/fun');
+const ecoModel = require('../src/schema/economy');
+const userModel = require('../src/schema/user');
 
 module.exports = class Profile extends Command {
 	constructor(client) {
@@ -51,9 +51,12 @@ module.exports = class Profile extends Command {
 			await funData.save();
 		}
 
-		const currentLevel = userData.level || 0;
-		const currentXP = userData.experience || 0;
-		const nextLevelXP = 5 * Math.pow(currentLevel, 2) + 50 * currentLevel + 100;
+		const currentLevel = userData.globalLevel.level || 0;
+		const currentXP = userData.globalLevel.experience || 0;
+		const nextLevelXP = 10 * Math.pow(currentLevel, 2) + 40 * currentLevel + 50;
+
+		const allUsers = await userModel.find().sort({ 'globalLevel.experience': -1 });
+		const userRank = allUsers.findIndex(u => u.userID === user.id) + 1;
 
 		const progress = Math.min((currentXP / nextLevelXP) * 10, 10);
 		const progressBar = '▰'.repeat(Math.floor(progress)) + '▱'.repeat(10 - Math.floor(progress));
@@ -62,7 +65,7 @@ module.exports = class Profile extends Command {
             .setTitle(`${user.username}'s profile`)
             .setThumbnail(user.displayAvatarURL({ dynamic:true }))
             .addFields(
-				{ name: '**__Leveling__**', value: `Level: **\`${currentLevel}\`**\nExperience: **\`${currentXP}/${nextLevelXP}\`**\n${progressBar}` },
+				{ name: '**__Level__**', value: `Level: **\`${currentLevel}\`**\nExperience: **\`${currentXP}/${nextLevelXP}\`**Rank: **\`#${userRank}\`**\n${progressBar}`, inline: true },
                 { name: '**__Balance__**', value: `${economyData.balance || 0}`, inline: true },
                 { name: '**__Reputation__**', value: `${funData.reputation || 0}`, inline: true },
                 { name: '**__Commands__**', value: `Total: **\`${userData.commandRun || 0}\`**\nMost Used: **\`${userData.mostUsedCommand || 'None'}\`**`, inline: true },

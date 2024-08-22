@@ -1,7 +1,7 @@
-const Command = require('../../structures/CommandClass');
+const Command = require('../src/structures/CommandClass');
 
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const ecoModel = require('../../schema/economy');
+const ecoModel = require('../src/schema/economy');
 
 const maxMissedDays = 3;
 const dailyCooldown = 24 * 60 * 60 * 1000;

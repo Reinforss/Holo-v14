@@ -26,14 +26,25 @@ const serverSchema = mongoose.Schema({
 		type: String,
 	},
 
-	LevelingEnabled: {
-		default: false,
-		type: Boolean,
+	leveling: {
+		status: { type: Boolean, default: false },
+		levelupmessage: { type: String, default: null },
 	},
-	LevelingMessage: {
-		default: 'Congralutions {{user}} you have leveled up to {{level}}',
-		type: String,
+
+	welcome: {
+		status: { type: Boolean, default: false },
+		channel: { type: String, default: null },
+		message: { type: String, default: null },
+		background: { type: String, default: null },
 	},
+
+	goodbye: {
+		status: { type: Boolean, default: false },
+		channel: { type: String, default: null },
+		message: { type: String, default: null },
+		background: { type: String, default: null },
+	},
+
 });
 
 module.exports = mongoose.model('Guild', serverSchema);

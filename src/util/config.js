@@ -14,11 +14,11 @@ module.exports = {
 		reconnectTimeout: 10000,
 	},
 	restnode: {
-		host: '185.201.8.39',
+		host: process.env.MUSICHOST,
 		port: 2333,
 		password: 'youshallnotpass',
 	},
 	nodes: [
-		{ name: process.env.NODE_NAME || 'Astera', host: '185.201.8.39', port: 2333, region: 'asia', password: 'youshallnotpass' },
+		{ name: process.env.NODE_NAME || 'Astera', host: process.env.MUSICHOST, port: 2333, region: 'asia', password: 'youshallnotpass' },
 	],
 };

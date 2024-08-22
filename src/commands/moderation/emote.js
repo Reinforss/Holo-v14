@@ -10,6 +10,7 @@ module.exports = class AddEmote extends Command {
 				.setName('emote')
 				.setDescription('[Holo | Moderation] Add emote to your server using this command!')
 				.setDMPermission(true)
+				.setDefaultMemberPermissions(PermissionsBitField.Flags.ManageGuildExpressions)
 				.addAttachmentOption(option => option
 					.setName('emote')
 					.setDescription('Image you want to turn into server emote.')

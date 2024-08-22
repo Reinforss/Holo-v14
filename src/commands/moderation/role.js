@@ -11,6 +11,7 @@ module.exports = class Role extends Command {
 				.setName('role')
 				.setDescription('[Holo|Moderation] Add / Remove role from specified user')
 				.setDMPermission(true)
+				.setDefaultMemberPermissions(PermissionsBitField.Flags.ManageRoles)
 				.addSubcommand(subcommand => subcommand
 					.setName('add')
 					.setDescription('[Holo|Moderation] Add role from specified user')

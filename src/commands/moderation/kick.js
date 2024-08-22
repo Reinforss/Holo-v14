@@ -11,6 +11,7 @@ module.exports = class Kick extends Command {
 				.setName('kick')
 				.setDescription('[Holo| Moderation] Kicks a member from the server')
 				.setDMPermission(true)
+				.setDefaultMemberPermissions(PermissionsBitField.Flags.KickMembers)
 				.addUserOption(option => option
 					.setName('user')
 					.setDescription('The user you want to kick')

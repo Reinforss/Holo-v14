@@ -10,6 +10,7 @@ module.exports = class Purge extends Command {
 				.setName('purge')
 				.setDescription('[Holo|Moderation] Remove up to 100 messages in the channel')
 				.setDMPermission(true)
+				.setDefaultMemberPermissions(PermissionsBitField.Flags.ManageMessages)
 				.addIntegerOption(option => option
 					.setName('number')
 					.setDescription('total messages you want to purge')

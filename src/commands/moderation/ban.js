@@ -11,6 +11,7 @@ module.exports = class Ban extends Command {
 				.setName('ban')
 				.setDescription('[Holo|Moderation] Ban a member from the server.')
 				.setDMPermission(true)
+				.setDefaultMemberPermissions(PermissionsBitField.Flags.BanMembers)
 				.addUserOption(option => option
 					.setName('user')
 					.setDescription('The user you want to ban avatar')

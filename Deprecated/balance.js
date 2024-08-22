@@ -1,11 +1,11 @@
 /* eslint-disable no-shadow */
 /* eslint-disable prefer-const */
 /* eslint-disable no-const-assign */
-const Command = require('../../structures/CommandClass');
+const Command = require('../src/structures/CommandClass');
 
 const { SlashCommandBuilder } = require('@discordjs/builders');
 
-const ecoModel = require('../../schema/economy');
+const ecoModel = require('../src/schema/economy');
 module.exports = class Balance extends Command {
 	constructor(client) {
 		super(client, {
