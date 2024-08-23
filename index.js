@@ -7,8 +7,8 @@ const connectToDatabase = () => new Promise((resolve, reject) => {
 		useNewUrlParser: true,
 		useUnifiedTopology: true,
 		tls: true,
-		tlsCAFile: 'D:/Holo-Dev/cert/mongodb-cert.crt',
-		tlsCertificateKeyFile: 'D:/Holo-Dev/cert/mongodb.pem',
+		tlsCAFile: process.env.prodCERTFILE,
+		tlsCertificateKeyFile: process.env.prodPEMFILE,
 		tlsAllowInvalidCertificates: true,
 		tlsAllowInvalidHostnames: true,
 	});
