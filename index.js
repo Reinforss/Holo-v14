@@ -6,6 +6,11 @@ const connectToDatabase = () => new Promise((resolve, reject) => {
 	mongoose.connect(process.env.MONGO_URI, {
 		useNewUrlParser: true,
 		useUnifiedTopology: true,
+		tls: true,
+		tlsCAFile: 'D:/Holo-Dev/cert/mongodb-cert.crt',
+		tlsCertificateKeyFile: 'D:/Holo-Dev/cert/mongodb.pem',
+		tlsAllowInvalidCertificates: true,
+		tlsAllowInvalidHostnames: true,
 	});
 	mongoose.connection.once('open', () => {
 		console.log(

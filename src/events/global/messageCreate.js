@@ -236,9 +236,9 @@ module.exports = class MessageCreate extends Event {
             const titleText = latestTitle ? latestTitle.title : 'No Title'; // Default title if none exists
 
             // Get local and global data based on rank type
-            const currentLevel = '12';
-			const currentXP = '3540';
-			const maxXP = '5730';
+            const currentLevel = '15';
+			const currentXP = '3561';
+			const maxXP = '7350';
 
             // Create the canvas for rank display
             const canvas = Canvas.createCanvas(700, 200);
@@ -249,8 +249,8 @@ module.exports = class MessageCreate extends Event {
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
             const { body } = await request(message.author.displayAvatarURL({ extension: 'jpg', size: 2048 }));
-			const avatar = await Canvas.loadImage(await body.arrayBuffer());
-            // const avatar = await Canvas.loadImage('https://bit.ly/4dwvmI2');
+			// const avatar = await Canvas.loadImage(await body.arrayBuffer());
+            const avatar = await Canvas.loadImage('https://media.discordapp.net/attachments/836520920730435596/1276115040327569429/353619744_1691367431325665_2754592312289404653_n.jpg?ex=66c85a3e&is=66c708be&hm=f4dbea4605643c773d1cdc8a6815d849d06eee047ab1743f36a304edf962948e&=&format=webp&width=1193&height=671');
 
             ctx.shadowColor = 'rgba(0, 0, 0, 1)';
             ctx.shadowBlur = 10;
@@ -259,12 +259,12 @@ module.exports = class MessageCreate extends Event {
 
             ctx.font = 'bold 35px "LEMON MILK", sans-serif';
             ctx.fillStyle = 'white';
-            ctx.fillText('@RyansHDs', 220, 65);
+            ctx.fillText('@Rihanss', 220, 65);
             ctx.fillRect(220, 75, 400, 6);
 
             ctx.font = 'bold 30px "LEMON MILK", sans-serif';
             ctx.fillStyle = 'white';
-            ctx.fillText('#23', 590, 35);
+            ctx.fillText('#13', 590, 35);
 			ctx.font = 'bold 13px "LEMON MILK", sans-serif';
 			ctx.fillText('Server Rank', 590, 50);
 

@@ -38,6 +38,7 @@ module.exports = class RankCommand extends Command {
     }
 
     async run(client, interaction) {
+        await interaction.deferReply();
         try {
             const user = interaction.options.getUser('user') || interaction.user;
             if (user.bot) return;
@@ -147,8 +148,6 @@ module.exports = class RankCommand extends Command {
                     }
                 }
             }
-
-
             // Create the canvas for rank display
             const canvas = Canvas.createCanvas(700, 200);
             const ctx = canvas.getContext('2d');
@@ -193,7 +192,6 @@ module.exports = class RankCommand extends Command {
             const padding = 10;
 
             drawRoundedRect(ctx, barX, barY, barWidth, barHeight, 12, 'rgba(85, 85, 85, 0.6)');
-
             let xpWidth = 0;
             if (maxXP > 0 && currentXP >= 0) {
                 xpWidth = (currentXP / maxXP) * (barWidth - padding);
@@ -233,11 +231,11 @@ module.exports = class RankCommand extends Command {
             ctx.drawImage(avatar, 25, 5, 200, 200);
 
             const attachment = new AttachmentBuilder(await canvas.encode('png'), { name: 'profile-image.png' });
-            await interaction.reply({ files: [attachment] });
+            await interaction.editReply({ files: [attachment] });
         }
         catch (e) {
             await client.hook.sendError('An error occurred', `**${e.stack.split('\n')[0]}**\n${e.stack.split('\n').slice(1).join('\n')}`);
-            return interaction.reply({
+            return interaction.editReply({
                 embeds: [client.embeds.errorEmbed('An error has occurred', 'Something went wrong with this command, this issue has been reported. Sorry for the inconvenience')],
                 ephemeral: true,
             });
