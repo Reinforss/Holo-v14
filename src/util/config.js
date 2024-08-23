@@ -16,9 +16,9 @@ module.exports = {
 	restnode: {
 		host: process.env.MUSICHOST,
 		port: 2333,
-		password: 'youshallnotpass',
+		password: process.env.MUSICPASSWORD,
 	},
 	nodes: [
-		{ name: process.env.NODE_NAME || 'Astera', host: process.env.MUSICHOST, port: 2333, region: 'asia', password: 'youshallnotpass' },
+		{ name: process.env.NODE_NAME || 'Astera', host: process.env.MUSICHOST, port: 2333, region: 'asia', password: process.env.MUSICPASSWORD },
 	],
 };

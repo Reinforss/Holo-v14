@@ -33,8 +33,8 @@ module.exports = class Bot extends Client {
 		this.emoji = require('../util/emoji.js');
 		this.util = require('../util/util.js');
 		this.Database = require('./mongoose.js');
-		this.embeds = require('../../src/assets/json/embeds');
-		this.hook = require('../../src/assets/json/webhook');
+		this.embeds = require('../assets/js/embeds.js');
+		this.hook = require('../assets/js/webhook.js');
 
 		this.helps = new Collection();
 		this.commands = new Collection();

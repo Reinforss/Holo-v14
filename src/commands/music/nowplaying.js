@@ -48,16 +48,6 @@ module.exports = class NowPlaying extends Command {
 			const Part = Math.floor((player.position / player.currentTrack.info.length) * 30);
 			const Emoji = player.isPlaying ? '🕒 |' : '⏸ |';
 
-			// let sources = 'Unknown';
-
-			// if (player.currentTrack.info.sourceName === 'youtube') sources = 'YouTube';
-			// else if (player.currentTrack.info.sourceName === 'soundcloud') sources = 'SoundCloud';
-			// else if (player.currentTrack.info.sourceName === 'spotify') sources = 'Spotify';
-			// else if (player.currentTrack.info.sourceName === 'apllemusic') sources = 'Apple Music';
-			// else if (player.currentTrack.info.sourceName === 'bandcamp') sources = 'Bandcamp';
-			// else if (player.currentTrack.info.sourceName === 'http') sources = 'HTTP';
-			// else if (player.currentTrack.info.sourceName === 'deezer') sources = 'Deezer';
-
 			const embed = new EmbedBuilder()
 				.setAuthor({
 					name: player.isPlaying ? 'Now Playing' : 'Song Paused',
@@ -68,7 +58,6 @@ module.exports = class NowPlaying extends Command {
 				.addFields([
 					{ name: 'Author:', value: `${currentAuthor}`, inline: true },
 					{ name: 'Requested By:', value: `${player.currentTrack.info.requester}`, inline: true },
-					// { name: 'Source:', value: `${sources}`, inline: true },
 					{ name: 'Duration:', value: `${playerDuration}`, inline: true },
 					{ name: 'Volume:', value: `${player.volume}%`, inline: true },
 					{ name: 'Loop Mode:', value: `${capital(player.loop)}`, inline: true },

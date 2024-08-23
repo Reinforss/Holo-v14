@@ -48,111 +48,100 @@ module.exports = class RankCommand extends Command {
             const funData = await funModel.findOne({ userID: user.id }) || new funModel({ userID: user.id });
             if (!funData) await funData.save();
 
-            // Fetch or create user data
             const userData = await userModel.findOne({ userID: user.id }) || new userModel({ userID: user.id });
             if (!userData) await userData.save();
 
-            // Ensure userData contains default local level data for the current server
             let localLevelData = userData.localLevels.find(level => level.serverID === interaction.guild.id);
             if (!localLevelData) {
                 localLevelData = { serverID: interaction.guild.id, experience: 0, level: 1 };
-                userData.localLevels.push(localLevelData); // Add new server level data
+                userData.localLevels.push(localLevelData);
             }
 
             const latestTitle = userData.globalLevel.titles.sort((a, b) => b.dateAchieved - a.dateAchieved)[0];
-            const titleText = latestTitle ? latestTitle.title : 'No Title'; // Default title if none exists
+            const titleText = latestTitle ? latestTitle.title : 'No Title';
 
-            // Get local and global data based on rank type
             let currentLevel, currentXP, maxXP;
 
             if (rankType === 'global') {
-                currentLevel = userData.globalLevel.level || 0; // Ensure you have global level data
-                currentXP = userData.globalLevel.experience || 0; // Ensure you have global experience data
-                maxXP = 10 * Math.pow(currentLevel, 2) + 40 * currentLevel + 50; // Calculate max XP for global level
+                currentLevel = userData.globalLevel.level || 0;
+                currentXP = userData.globalLevel.experience || 0;
+                maxXP = 10 * Math.pow(currentLevel, 2) + 40 * currentLevel + 50;
             }
             else {
                 // Server ranking
                 currentLevel = localLevelData.level || 0;
                 currentXP = localLevelData.experience || 0;
-                maxXP = 10 * Math.pow(currentLevel, 2) + 40 * currentLevel + 50; // Calculate max XP for local level
+                maxXP = 10 * Math.pow(currentLevel, 2) + 40 * currentLevel + 50;
             }
 
             let userRank, allUsers;
 
             if (rankType === 'global') {
-                // Fetch the user's global XP to check if they have received any
                 const userDoc = await userModel.findOne({ userID: user.id }, { 'globalLevel.experience': 1 });
 
-                // Check if userDoc exists and has experience defined
                 if (!userDoc || userDoc.globalLevel.experience === undefined || userDoc.globalLevel.experience <= 0) {
-                    userRank = 'N/A'; // User does not exist or has no XP
+                    userRank = 'N/A';
                 }
                 else {
-                    // Global ranking logic - limit to the top 1000 users
+
                     allUsers = await userModel.find().sort({ 'globalLevel.experience': -1 }).limit(999);
 
-                    // Sort users by level first, then by experience
                     allUsers = allUsers.sort((a, b) => {
                         const aLevel = a.globalLevel.level;
                         const bLevel = b.globalLevel.level;
 
                         if (aLevel !== bLevel) {
-                            return bLevel - aLevel; // Higher level first
+                            return bLevel - aLevel;
                         }
 
-                        return b.globalLevel.experience - a.globalLevel.experience; // Higher XP first
+                        return b.globalLevel.experience - a.globalLevel.experience;
                     });
 
                     const userIndex = allUsers.findIndex(u => u.userID === user.id);
-                    userRank = userIndex === -1 ? '999+' : userIndex + 1; // User rank based on index
+                    userRank = userIndex === -1 ? '999+' : userIndex + 1;
                 }
             }
             else {
-                // Server ranking logic
-                const serverLevelingEnabled = await checkServerLevelingEnabled(interaction.guild.id); // Check if leveling is enabled on this server
+                const serverLevelingEnabled = await checkServerLevelingEnabled(interaction.guild.id);
 
                 if (!serverLevelingEnabled) {
-                    userRank = 'N/A'; // Server leveling is not enabled, rank is not applicable
+                    userRank = 'N/A';
                 }
                 else {
-                    // Fetch the user's XP on the server to check if they have received any
+
                     const userDoc = await userModel.findOne({
                         userID: user.id,
                         'localLevels.serverID': interaction.guild.id,
-                    }, { 'localLevels.$': 1 }); // Only select the relevant server's localLevels
+                    }, { 'localLevels.$': 1 });
 
-                    // Ensure userDoc exists and localLevels is properly defined
                     if (!userDoc || !userDoc.localLevels || userDoc.localLevels.length === 0 || userDoc.localLevels[0].experience === undefined || userDoc.localLevels[0].experience <= 0) {
-                        userRank = 'N/A'; // User document does not exist or has no XP
+                        userRank = 'N/A';
                     }
                     else {
-                        // If the user has XP, proceed to rank them
                         allUsers = await userModel.find({ 'localLevels.serverID': interaction.guild.id })
                             .sort({ 'localLevels.experience': -1 })
-                            .limit(999); // Accessing experience directly
+                            .limit(999);
 
-                        // Sort users by local level first, then by experience
                         allUsers = allUsers.sort((a, b) => {
                             const aLevel = a.localLevels.find(level => level.serverID === interaction.guild.id).level;
                             const bLevel = b.localLevels.find(level => level.serverID === interaction.guild.id).level;
 
                             if (aLevel !== bLevel) {
-                                return bLevel - aLevel; // Higher level first
+                                return bLevel - aLevel;
                             }
 
                             return b.localLevels.find(level => level.serverID === interaction.guild.id).experience - b.localLevels.find(level => level.serverID === interaction.guild.id).experience; // Higher XP first
                         });
 
                         const userIndex = allUsers.findIndex(u => u.userID === user.id);
-                        userRank = userIndex === -1 ? '999+' : userIndex + 1; // User rank based on index
+                        userRank = userIndex === -1 ? '999+' : userIndex + 1;
                     }
                 }
             }
-            // Create the canvas for rank display
+
             const canvas = Canvas.createCanvas(700, 200);
             const ctx = canvas.getContext('2d');
 
-            // Background color
             ctx.fillStyle = '#282B30';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 

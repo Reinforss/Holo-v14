@@ -64,14 +64,6 @@ module.exports = class Trivia extends Command {
 				await funDB.save();
 			}
 
-			// if (!funDB) {
-			//     const newFun = new Database({
-			//         userID: interaction.user.id,
-			//         triviaWin: 0,
-			//     });
-			//     await newFun.save();
-			// }
-
 			const difficult = body.results[0].difficulty;
 
 			let duration;
