@@ -42,42 +42,59 @@ module.exports = class ReadyEvent extends Event {
 
 		const reminderData = await reminderModel.find();
 		if (!reminderData) return;
+
 		for (const reminder of reminderData) {
-		    const { userID, reminderDuration, reminderReason, reminderStart, reminderFormat, reminderMsgID } = reminder;
+			const { userID, reminderDuration, reminderReason, reminderStart, reminderFormat, reminderMsgID } = reminder;
 
-		    let timems;
-		    if (reminderFormat === 's') {
-		        timems = reminderDuration * 1000;
-		    }
-		    else if (reminderFormat === 'm') {
-		        timems = reminderDuration * 60 * 1000;
-		    }
-		    else if (reminderFormat === 'h') {
-		        timems = reminderDuration * 60 * 60 * 1000;
-		    }
-		    else if (reminderFormat === 'd') {
-		        timems = reminderDuration * 24 * 60 * 60 * 1000;
-		    }
+			let timems;
+			switch (reminderFormat) {
+				case 's':
+					timems = reminderDuration * 1000;
+					break;
+				case 'm':
+					timems = reminderDuration * 60 * 1000;
+					break;
+				case 'h':
+					timems = reminderDuration * 60 * 60 * 1000;
+					break;
+				case 'd':
+					timems = reminderDuration * 24 * 60 * 60 * 1000;
+					break;
+				default:
+					console.error(`Invalid reminder format: ${reminderFormat}`);
+					continue;
+			}
+			const elapsed = Date.now() - reminderStart;
+			const timeLeft = timems - elapsed;
 
-		    const elapsed = Date.now() - reminderStart;
-		    const timeLeft = timems - elapsed;
+			if (timeLeft <= 0) {
+				console.warn(`Reminder for user ${userID} is already due.`);
+				continue;
+			}
 
-		    const remind = async () => {
-		        const user = await client.users.fetch(userID);
+			const remind = async () => {
+				try {
+					const user = await client.users.fetch(userID);
+					if (user) {
+						if (reminderReason) {
+							await user.send({ embeds: [client.embeds.reminderEmbed('Reminder', `${reminderReason}`)] });
+						}
+						else {
+							console.warn(`No reminder reason for user ${userID}`);
+						}
+					}
+					else {
+						console.warn(`User ${userID} not found or bot is not in the same server.`);
+					}
 
-		        if (user) {
-		            if (reminderReason) {
-		                user.send({ embeds: [client.embeds.reminderEmbed('Reminder', `${reminderReason}`)] });
-		            }
-		            else {
-		                return;
-		            }
-		        }
+					await reminderModel.findOneAndDelete({ reminderMsgID }, { useFindAndModify: false });
+				}
+				catch (error) {
+					console.error(`Error sending reminder to user ${userID}:`, error);
+				}
+			};
 
-		        await reminderModel.findOneAndDelete({ reminderMsgID }, { useFindAndModify: false });
-		    };
-
-		    setTimeout(remind(), timeLeft);
+			setTimeout(remind, timeLeft);
 		}
 	}
 };

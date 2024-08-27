@@ -1,6 +1,6 @@
 const Command = require('../../structures/CommandClass');
 
-const information = require('../../assets/json/information');
+const information = require('../../assets/js/information');
 const kitsu = require('node-kitsu');
 
 const { SlashCommandBuilder } = require('@discordjs/builders');
