@@ -23,6 +23,7 @@ module.exports = class RankCommand extends Command {
                     .addChoices(
                         { name: 'Global', value: 'global' },
                         { name: 'Server', value: 'server' },
+                        { name: 'Leaderboard', value: 'leaderboard' },
                     )
                     .setRequired(true),
                 )
