@@ -27,19 +27,19 @@ module.exports = class Skip extends Command {
 
 		if (!player) {
 			const embed = new EmbedBuilder().setDescription('`❌` | No song are currently being played').setColor('Red');
-			return interaction.editReply({ embeds: [embed], ephemeral: true });
+			return interaction.reply({ embeds: [embed], ephemeral: true });
 		}
 
 		if (!interaction.member.voice.channel) {
 			const errorEmbed = new EmbedBuilder().setColor('Red').setDescription('`❌` | You must be on voice channel to use this command!');
 
-			return interaction.editReply({ embeds: [errorEmbed], ephemeral: true });
+			return interaction.reply({ embeds: [errorEmbed], ephemeral: true });
 		}
 
 		if (player && interaction.member.voice.channelId !== interaction.guild.members.me.voice.channelId) {
 			const errorEmbed = new EmbedBuilder().setColor('Red').setDescription('`❌` | You must be on the same voice channel as mine to use this command.');
 
-			return interaction.editReply({ embeds: [errorEmbed], ephemeral: true });
+			return interaction.reply({ embeds: [errorEmbed], ephemeral: true });
 		}
 
 		else {
@@ -50,7 +50,7 @@ module.exports = class Skip extends Command {
 				await player.skip();
 				const embed = new EmbedBuilder().setColor('Green').setDescription('`⏭️` | Song has been: `Skipped`');
 				votes.clear();
-				return interaction.editReply({ embeds: [embed] });
+				return interaction.reply({ embeds: [embed] });
 			}
 
 			if (!votes.has(interaction.user.id)) {
@@ -63,7 +63,7 @@ module.exports = class Skip extends Command {
 					.setColor('Yellow')
 					.setDescription(`\`🗳️\` | ${interaction.user} has voted to skip the song. \`${votes.size}/${majority}\` votes needed to skip.`);
 
-				interaction.editReply({ embeds: [embed], ephemeral: false });
+				interaction.reply({ embeds: [embed], ephemeral: false });
 
 				// Check if the number of votes reaches the majority
 				if (votes.size >= majority) {
@@ -74,7 +74,7 @@ module.exports = class Skip extends Command {
 
 					votes.clear();
 
-					return interaction.editReply({ embeds: [skipEmbed] });
+					return interaction.reply({ embeds: [skipEmbed] });
 				}
 			}
 			else {
@@ -82,7 +82,7 @@ module.exports = class Skip extends Command {
 					.setColor('Yellow')
 					.setDescription('`🗳️` | You already voted to skip!');
 
-				interaction.editReply({ embeds: [embed], ephemeral: true });
+				interaction.reply({ embeds: [embed], ephemeral: true });
 			}
 		}
 	}

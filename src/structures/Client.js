@@ -28,6 +28,10 @@ module.exports = class Bot extends Client {
 				GatewayIntentBits.GuildIntegrations,
 				// GatewayIntentBits.MessageContent,
 			],
+			allowedMentions: {
+				parse: ['users', 'roles'],
+				repliedUser: true,
+			},
 		});
 		this.config = require('../util/config.js');
 		this.emoji = require('../util/emoji.js');
