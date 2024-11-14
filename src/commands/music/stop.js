@@ -23,6 +23,9 @@ module.exports = class Stop extends Command {
 		try {
 			const player = client.poru.players.get(interaction.guild.id);
 
+			// if (interaction.user.id !== '519521318719324181') return interaction.reply('`❌` | The music system is currently under maintenance. We apologize for the inconvenience and expect it to be back soon!');
+
+
 			const voiceChannel = interaction.member.voice.channel;
 			const memberCount = voiceChannel ? voiceChannel.members.size : 1;
 
@@ -45,6 +48,8 @@ module.exports = class Stop extends Command {
 			}
 			else {
 				const requester = player.currentTrack.info.requester;
+
+				if (!requester) return;
 
 			if (!voiceChannel.members.has(requester)) {
 				await player.destroy();

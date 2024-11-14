@@ -21,6 +21,9 @@ module.exports = class Pause extends Command {
 		try {
 		const player = client.poru.players.get(interaction.guild.id);
 
+		// if (interaction.user.id !== '519521318719324181') return interaction.reply('`❌` | The music system is currently under maintenance. We apologize for the inconvenience and expect it to be back soon!');
+
+
 		if (!player) {
 			const noPlayer = new EmbedBuilder().setColor('Red').setDescription('`❌` | No song are currently being played.');
 

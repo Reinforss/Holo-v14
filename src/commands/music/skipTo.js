@@ -27,6 +27,9 @@ module.exports = class Play extends Command {
 		const player = client.poru.players.get(interaction.guild.id);
 
 		await interaction.deferReply();
+
+		// if (interaction.user.id !== '519521318719324181') return interaction.editReply('`❌` | The music system is currently under maintenance. We apologize for the inconvenience and expect it to be back soon!');
+
 		const value = interaction.options.getInteger('position');
 
 		if (!player) {

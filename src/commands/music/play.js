@@ -29,6 +29,8 @@ module.exports = class Play extends Command {
 
 		await interaction.deferReply();
 
+		// if (interaction.user.id !== '519521318719324181') return interaction.editReply('`❌` | The music system is currently under maintenance. We apologize for the inconvenience and expect it to be back soon!');
+
 		const song = interaction.options.getString('query');
 
 		const embed = new EmbedBuilder()
@@ -46,8 +48,16 @@ module.exports = class Play extends Command {
 			return interaction.editReply({ embeds: [embed] });
 		}
 
+			// 		const urlPattern = /^(https?:\/\/[^\s]+)/;
+			// if (urlPattern.test(song)) {
+			// 	embed.setDescription('`❌` | URLs are disabled. Please provide the song name instead.');
+			// 	return interaction.editReply({ embeds: [embed] });
+			// }
+
 		const res = await client.poru.resolve({ query: song, requester: interaction.user });
 		const { loadType, tracks, playlistInfo } = res;
+
+		console.log(loadType);
 
 		if (loadType === 'error' || loadType === 'empty') {
 			embed.setDescription('`❌` | Song was no found or Failed to load song!');

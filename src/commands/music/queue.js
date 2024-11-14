@@ -25,6 +25,9 @@ module.exports = class Example extends Command {
 
 		await interaction.deferReply({ ephemeral: false });
 
+		// if (interaction.user.id !== '519521318719324181') return interaction.editReply('`❌` | The music system is currently under maintenance. We apologize for the inconvenience and expect it to be back soon!');
+
+
 		if (!player || player.queue.size == 0) {
 			const noPlayer = new EmbedBuilder().setColor('Red').setDescription('`❌` | No song are currently being played.');
 
