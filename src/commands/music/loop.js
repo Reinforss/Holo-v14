@@ -21,7 +21,7 @@ module.exports = class Loop extends Command {
 
 	async run(client, interaction) {
 		try {
-		//	if (interaction.user.id !== '519521318719324181') return interaction.reply('`❌` | The music system is currently under maintenance. We apologize for the inconvenience and expect it to be back soon!');
+		// if (interaction.user.id !== '519521318719324181') return interaction.reply('`❌` | The music system is currently under maintenance. We apologize for the inconvenience and expect it to be back soon!');
 
 			const player = client.poru.players.get(interaction.guild.id);
 

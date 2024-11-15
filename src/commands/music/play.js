@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape */
 const Command = require('../../structures/CommandClass');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 
@@ -14,7 +15,7 @@ module.exports = class Play extends Command {
 				.setDMPermission(true)
 				.addStringOption(option => option
 					.setName('query')
-					.setDescription('Provide song name/url.')
+					.setDescription('Provide song name.')
 					.setRequired(true),
 				),
 			usage: 'play <music>',
@@ -48,21 +49,46 @@ module.exports = class Play extends Command {
 			return interaction.editReply({ embeds: [embed] });
 		}
 
-			// 		const urlPattern = /^(https?:\/\/[^\s]+)/;
-			// if (urlPattern.test(song)) {
-			// 	embed.setDescription('`❌` | URLs are disabled. Please provide the song name instead.');
-			// 	return interaction.editReply({ embeds: [embed] });
-			// }
+		const urlPattern = /^(https?:\/\/(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+|\S+)|youtu\.be\/[A-Za-z0-9_-]+)(?:[^\s]*)?)$/;
+		if (urlPattern.test(song)) {
+			embed.setDescription('`❌` | YouTube links are disabled. Please provide a song name instead!');
+			return interaction.editReply({ embeds: [embed] });
+		}
 
-		const res = await client.poru.resolve({ query: song, requester: interaction.user });
+		let src;
+		const res = await client.poru.resolve({ query: song, source:src || 'dzsearch', requester: interaction.user });
 		const { loadType, tracks, playlistInfo } = res;
 
 		console.log(loadType);
 
-		if (loadType === 'error' || loadType === 'empty') {
-			embed.setDescription('`❌` | Song was no found or Failed to load song!');
+		switch (loadType) {
+			case 'empty':
+					if (src === 'dzsearch') {
+						src = 'spsearch';
+						const spRes = await client.poru.resolve({ query: song, source: src, requester: interaction.user });
+						const { loadType: spLoadType, tracks: spTracks } = spRes;
 
-			return interaction.editReply({ embeds: [embed] });
+						if (spLoadType === 'empty') {
+							src = 'ytmsearch';
+							const ytmRes = await client.poru.resolve({ query: song, source: src, requester: interaction.user });
+							const { loadType: ytmLoadType, tracks: ytmTracks } = ytmRes;
+
+							if (ytmLoadType === 'empty' || ytmTracks.length === 0) {
+								embed.setDescription('`❌` | No results found on Deezer, Spotify, or YouTube Music!');
+								return interaction.editReply({ embeds: [embed] });
+							}
+							tracks.push(...ytmTracks);
+						}
+						else {
+							tracks.push(...spTracks);
+						}
+					}
+				break;
+			case 'error':
+				embed.setDescription('`❌` | Song was no found or Failed to load song!');
+
+				interaction.editReply({ embeds: [embed] });
+			break;
 		}
 
 		if (!player) {
