@@ -44,8 +44,10 @@ module.exports = class Info extends Command {
 					.setName('anime')
 					.setDescription('[Holo | Information] See information about anime')
 					.addStringOption(option => option
-						.setName('anime')
-						.setDescription('The anime information you want to check.'))),
+						.setName('name')
+						.setDescription('The anime information you want to check.')
+						.setRequired(true),
+					)),
 			usage: 'info',
 			category: 'Information',
 			permissions: ['Use Application Commands', 'Send Messages', 'Embed Links'],

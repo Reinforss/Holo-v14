@@ -63,33 +63,43 @@ module.exports = class Play extends Command {
 
 		switch (loadType) {
 			case 'empty':
-					if (src === 'dzsearch') {
-						src = 'spsearch';
-						const spRes = await client.poru.resolve({ query: song, source: src, requester: interaction.user });
-						const { loadType: spLoadType, tracks: spTracks } = spRes;
+				if (src === 'dzsearch') {
+					src = 'spsearch';
+					const spRes = await client.poru.resolve({ query: song, source: src, requester: interaction.user });
+					const { loadType: spLoadType, tracks: spTracks } = spRes;
 
-						if (spLoadType === 'empty') {
-							src = 'ytmsearch';
-							const ytmRes = await client.poru.resolve({ query: song, source: src, requester: interaction.user });
-							const { loadType: ytmLoadType, tracks: ytmTracks } = ytmRes;
+					if (spLoadType === 'empty' || spTracks.length === 0) {
+						src = 'ytmsearch';
+						const ytmRes = await client.poru.resolve({ query: song, source: src, requester: interaction.user });
+						const { loadType: ytmLoadType, tracks: ytmTracks } = ytmRes;
 
-							if (ytmLoadType === 'empty' || ytmTracks.length === 0) {
-								embed.setDescription('`❌` | No results found on Deezer, Spotify, or YouTube Music!');
+						if (ytmLoadType === 'empty' || ytmTracks.length === 0) {
+							src = 'scsearch';
+							const scRes = await client.poru.resolve({ query: song, source: src, requester: interaction.user });
+							const { loadType: scLoadType, tracks: scTracks } = scRes;
+
+							if (scLoadType === 'empty' || scTracks.length === 0) {
+								embed.setDescription('`❌` | No results found on Deezer, Spotify, YouTube Music, or SoundCloud!');
 								return interaction.editReply({ embeds: [embed] });
 							}
-							tracks.push(...ytmTracks);
+							tracks.push(...scTracks);
 						}
 						else {
-							tracks.push(...spTracks);
+							tracks.push(...ytmTracks);
 						}
 					}
+					else {
+						tracks.push(...spTracks);
+					}
+				}
 				break;
-			case 'error':
-				embed.setDescription('`❌` | Song was no found or Failed to load song!');
 
+			case 'error':
+				embed.setDescription('`❌` | Song was not found or Failed to load song!');
 				interaction.editReply({ embeds: [embed] });
-			break;
+				break;
 		}
+
 
 		if (!player) {
 			player = await client.poru.createConnection({
@@ -131,7 +141,7 @@ module.exports = class Play extends Command {
 	}
 	catch (e) {
 		await client.hook.sendError('An error occurred', `${e.stack.split('\n')[0]}\n${e.stack.split('\n')[1]}`);
-		return interaction.reply({ embeds: [client.embeds.errorEmbed('An error has occured', 'Something went wrong with this command, this issue has been reported. Sorry for the Inconvenience')], ephemeral: true });
+		return interaction.editReply({ embeds: [client.embeds.errorEmbed('An error has occured', 'Something went wrong with this command, this issue has been reported. Sorry for the Inconvenience')], ephemeral: true });
 	}
 }
 };

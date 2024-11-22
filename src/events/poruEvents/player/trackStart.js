@@ -154,9 +154,10 @@ module.exports.run = async (client, player, track) => {
 				collector.stop();
 			}
 			else {
-				message.deferUpdate();
+				const embed = new EmbedBuilder().setColor('Red').setDescription('`👋` | Player has been: `Disconnected`.');
 
 				await player.destroy();
+				return message.reply({ embeds: [embed], ephemeral: true });
 			}
 		}
 		else if (message.customId === 'pause') {
