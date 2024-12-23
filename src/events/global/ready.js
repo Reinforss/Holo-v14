@@ -41,7 +41,7 @@ module.exports = class ReadyEvent extends Event {
 
 	// Function to push status to https://uptime.asterax.xyz/status/holo
 	function pushStatus(status) {
-		const uptimeAsterax = `https://uptime.asterax.xyz/api/push/${process.env.UNIQUECODE}?status=${status}&msg=OK&ping=${client.ws.ping}`;
+		const uptimeAsterax = `https://uptime.asterax.xyz/api/push/${process.env.UNIQUECODEUPTIME}?status=${status}&msg=OK&ping=${client.ws.ping}`;
 
 		axios.get(uptimeAsterax);
 	}
