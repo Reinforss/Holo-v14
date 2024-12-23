@@ -2,6 +2,7 @@ const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v10');
 const fs = require('fs');
 const { ClusterManager } = require('discord-hybrid-sharding');
+
 require('dotenv').config();
 
 const deploy = async () => {

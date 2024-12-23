@@ -9,8 +9,8 @@ const connectToDatabase = () => new Promise((resolve, reject) => {
 		tls: true,
 		tlsCAFile: process.env.prodCERTFILE,
 		tlsCertificateKeyFile: process.env.prodPEMFILE,
-		tlsAllowInvalidCertificates: true,
-		tlsAllowInvalidHostnames: true,
+		tlsAllowInvalidCertificates: false,
+		tlsAllowInvalidHostnames: false,
 	});
 	mongoose.connection.once('open', () => {
 		console.log(

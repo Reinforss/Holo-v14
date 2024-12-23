@@ -140,7 +140,7 @@ module.exports = class Play extends Command {
 		await interaction.editReply({ embeds: [embed] });
 	}
 	catch (e) {
-		await client.hook.sendError('An error occurred', `${e.stack.split('\n')[0]}\n${e.stack.split('\n')[1]}`);
+		await client.hook.sendError('An error occurred', `${e}`);
 		return interaction.editReply({ embeds: [client.embeds.errorEmbed('An error has occured', 'Something went wrong with this command, this issue has been reported. Sorry for the Inconvenience')], ephemeral: true });
 	}
 }
