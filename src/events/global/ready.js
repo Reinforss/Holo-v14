@@ -27,24 +27,48 @@ module.exports = class ReadyEvent extends Event {
 		  }, 60000);
                 console.log(`[${new Date().toString().split(' ', 5).join(' ')}][INFO] Discord Bot is now online`);
 
-		setInterval(async () => {
-			const guildEval = await client.cluster.broadcastEval(c => c.guilds.cache.size);
-			const serverCount = guildEval.reduce((prev, val) => prev + val, 0);
+		if (process.env.TOPGGTOKEN) {
+			setInterval(async () => {
+				const guildEval = await client.cluster.broadcastEval(c => c.guilds.cache.size);
+				const serverCount = guildEval.reduce((prev, val) => prev + val, 0);
 
-			axios.post('https://top.gg/api/bots/519521318719324181/stats', { server_count: serverCount, shard_count: getInfo().TOTAL_SHARDS }, { headers: { 'Authorization': process.env.TOPGGTOKEN } });
-		}, 60000);
+				axios.post(`https://top.gg/api/bots/${client.user.id}/stats`, { server_count: serverCount, shard_count: getInfo().TOTAL_SHARDS }, { headers: { 'Authorization': process.env.TOPGGTOKEN } });
+			}, 60000);
+		}
+		else {
+			return console.log(`[${new Date().toString().split(' ', 5).join(' ')}][ERROR] Top.gg token is invalid or not provided. Unable to start Top.gg stats posting.`);
+		}
 
 		setInterval(() => {
-			pushStatus('up'); // Push the bot status to https://uptime.asterax.xyz/status/holo every 1 minute
+			try {
+				pushStatus('up'); // Push the bot status every 1 minute
+			}
+			catch (error) {
+				console.error('Error pushing uptime status:', error.message);
+			}
 		}, 60000);
 
+		// Function to push status to https://uptime.asterax.xyz/status/holo
+		function pushStatus(status) {
+			const uniqueCode = process.env.UNIQUECODEUPTIME;
 
-	// Function to push status to https://uptime.asterax.xyz/status/holo
-	function pushStatus(status) {
-		const uptimeAsterax = `https://uptime.asterax.xyz/api/push/${process.env.UNIQUECODEUPTIME}?status=${status}&msg=OK&ping=${client.ws.ping}`;
+			if (!uniqueCode) {
+				return console.error('Unique code for asterax.uptime is empty. Cannot proceed.');
+			}
 
-		axios.get(uptimeAsterax);
-	}
+			const uptimeURL = `https://uptime.asterax.xyz/api/push/${uniqueCode}?status=${status}&msg=OK&ping=${client.ws.ping}`;
+
+			axios
+				.get(uptimeURL)
+				.then(() => {
+					console.log(`[${new Date().toISOString()}] Uptime status pushed successfully.`);
+				})
+				.catch(error => {
+					console.error(`[${new Date().toISOString()}] Error pushing uptime status:`, error.message);
+				});
+		}
+
+
 		try {
 			await client.poru.init(client);
 		}

@@ -1,5 +1,6 @@
 /* eslint-disable no-inline-comments */
 const Command = require('../../structures/CommandClass');
+
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { EmbedBuilder, ChannelType, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const { PermissionsBitField } = require('discord.js');
