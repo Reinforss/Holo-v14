@@ -16,6 +16,8 @@ module.exports = class GuildMemberRemove extends Event {
 
     async run(member) {
 
+        if (member.bot) return;
+
         let serverData = await serverModel.findOne({ serverID: member.guild.id });
         if (!serverData) {
             serverData = new serverModel({ serverID: member.guild.id });
