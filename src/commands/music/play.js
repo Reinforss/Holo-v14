@@ -79,8 +79,10 @@ module.exports = class Play extends Command {
 							const { loadType: scLoadType, tracks: scTracks } = scRes;
 
 							if (scLoadType === 'empty' || scTracks.length === 0) {
-								embed.setDescription('`❌` | No results found on Deezer, Spotify, YouTube Music, or SoundCloud!');
-								return interaction.editReply({ embeds: [embed] });
+								const NotFoundEmbed = new EmbedBuilder()
+								.setColor('Red')
+								.setDescription('`❌` | No results found on Deezer, Spotify, YouTube Music, or SoundCloud!');
+								return interaction.editReply({ embeds: [NotFoundEmbed] });
 							}
 							tracks.push(...scTracks);
 						}
